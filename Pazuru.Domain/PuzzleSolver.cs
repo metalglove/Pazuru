@@ -24,8 +24,7 @@ namespace Pazuru.Domain
         protected PuzzleSolver(TPuzzle puzzle)
         {
             Puzzle = puzzle;
-            PuzzleState puzzleState = puzzle.PuzzleState;
-            _puzzleStates.AddFirst(puzzleState);
+            _puzzleStates.AddFirst(CopyPuzzleState());
         }
 
         public PuzzleState GetSolvedState()
