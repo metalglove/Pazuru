@@ -3,6 +3,7 @@ using Pazuru.Application.Interfaces;
 using Pazuru.Application.Services;
 using Pazuru.Domain;
 using Pazuru.Sudoku;
+using System;
 
 namespace Pazuru.Mapping
 {
@@ -25,6 +26,11 @@ namespace Pazuru.Mapping
 
             #endregion
             return serviceCollection;
+        }
+
+        public static IGenericServiceProvider ToGenericServiceProvider(this IServiceProvider serviceProvider)
+        {
+            return new GenericServiceProvider(serviceProvider);
         }
     }
 }

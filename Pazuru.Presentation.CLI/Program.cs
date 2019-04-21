@@ -1,6 +1,7 @@
 ﻿using Pazuru.Application.DTOs;
 using Pazuru.Application.Interfaces;
 using Pazuru.Domain;
+using Pazuru.Mapping;
 using Pazuru.Sudoku;
 using System;
 using System.Threading.Tasks;
@@ -13,8 +14,8 @@ namespace Pazuru.Presentation.CLI
         {
             Startup startup = new Startup();
             await startup.IntializeAsync();
-            IServiceProvider serviceProvider = startup.GetServiceProvider();
-            IPuzzleService<SudokuPuzzle> puzzleService = serviceProvider.GetService(typeof(IPuzzleService<SudokuPuzzle>)) as IPuzzleService<SudokuPuzzle>;
+            IGenericServiceProvider serviceProvider = startup.GetServiceProvider();
+            IPuzzleService<SudokuPuzzle> puzzleService = serviceProvider.GetService<IPuzzleService<SudokuPuzzle>>();
             SudokuPuzzle puzzle = puzzleService.Generate();
             string beforePuzzle = puzzleService.Print(puzzle);
             Console.WriteLine("Sudoku");

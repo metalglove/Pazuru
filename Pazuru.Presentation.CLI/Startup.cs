@@ -1,24 +1,24 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Pazuru.Mapping;
-using System;
 using System.Threading.Tasks;
 
 namespace Pazuru.Presentation.CLI
 {
     internal class Startup
     {
-        private IServiceProvider serviceProvider;
+        private IGenericServiceProvider serviceProvider;
 
         internal Task IntializeAsync()
         {
             serviceProvider = new ServiceCollection()
                 .AddApplicationServices()
-                .BuildServiceProvider();
+                .BuildServiceProvider()
+                .ToGenericServiceProvider();
 
             return Task.CompletedTask;
         } 
 
-        internal IServiceProvider GetServiceProvider()
+        internal IGenericServiceProvider GetServiceProvider()
         {
             return serviceProvider;
         }
