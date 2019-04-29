@@ -4,6 +4,7 @@ using Pazuru.Domain;
 using Pazuru.Mapping;
 using Pazuru.Sudoku;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Pazuru.Presentation.CLI
@@ -20,9 +21,13 @@ namespace Pazuru.Presentation.CLI
             string beforePuzzle = puzzleService.Print(puzzle);
             Console.WriteLine("Sudoku");
             Console.Write(beforePuzzle);
+            Stopwatch stopwatch = Stopwatch.StartNew();
             PuzzleSolveDto puzzleSolveDto = puzzleService.Solve(puzzle);
+            stopwatch.Stop();
+
             if (puzzleSolveDto.Success)
             {
+                Console.WriteLine($"Solved in: {stopwatch.ElapsedMilliseconds}ms");
                 string afterPuzzle = puzzleService.Print(puzzle);
                 Console.WriteLine(afterPuzzle);
                 ConsoleKeyInfo input;

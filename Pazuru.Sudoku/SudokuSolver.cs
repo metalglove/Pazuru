@@ -28,11 +28,12 @@ namespace Pazuru.Sudoku
             // voor elk getal in de getallen van 1 tot 9
             for (int i = 1; i <= 9; i++)
             {
+                SudokuMove sudokuMove = new SudokuMove(row, column, i);
                 // als er geen conflict is voor dit getal op deze row en column,
-                if (IsAssignmentValid(row, column, i))
+                if (sudokuMove.Execute(Puzzle))
                 {
+                    AddPuzzleState();
                     // zet het getal in die row en column en ga recursief verder met de rest van de puzzle 
-                    this[row, column] = i;
                     if (RecursiveSolve())
                     {
                         //als de recursieve functie succesvol was uitgevoerd dan word true terug gegeven
@@ -40,8 +41,9 @@ namespace Pazuru.Sudoku
                     }
 
                     // als de recursieve functie niet succesvol was uitgevoerd ga naar het volgende getal
-                    // en zet de waarde in de cell terug naar 0
-                    this[row, column] = 0;
+                    // en zet de waarde in de cell terug naar 0 (het vorige nummer in dit geval)
+                    sudokuMove.Undo(Puzzle);
+                    AddPuzzleState();
                 }
             }
 
@@ -50,11 +52,11 @@ namespace Pazuru.Sudoku
         }
         private bool TryFindEmptyCell(out int row, out int column)
         {
-            for (int i = 0; i < Length; i++)
+            for (int i = 0; i < Puzzle.Length; i++)
             {
-                for (int j = 0; j < Length; j++)
+                for (int j = 0; j < Puzzle.Length; j++)
                 {
-                    if (this[i, j] == 0)
+                    if (Puzzle[i, j].Equals(0))
                     {
                         row = i;
                         column = j;
@@ -69,11 +71,11 @@ namespace Pazuru.Sudoku
         private bool GridHasEmptyCell()
         {
             HashSet<int> index = new HashSet<int>();
-            for (int i = 0; i < Length; i++)
+            for (int i = 0; i < Puzzle.Length; i++)
             {
-                for (int j = 0; j < Length; j++)
+                for (int j = 0; j < Puzzle.Length; j++)
                 {
-                    index.Add(this[i, j]);
+                    index.Add(Puzzle[i, j]);
                 }
             }
             return index.Contains(0);

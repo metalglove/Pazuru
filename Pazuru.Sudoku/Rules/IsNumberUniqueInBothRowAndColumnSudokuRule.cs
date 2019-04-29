@@ -1,4 +1,5 @@
 ﻿using Pazuru.Domain;
+using System;
 
 namespace Pazuru.Sudoku.Rules
 {
@@ -9,12 +10,17 @@ namespace Pazuru.Sudoku.Rules
 
         }
 
-        public override bool IsValid(int row, int column, int number)
+        public override bool IsValid<TPuzzle>(PuzzleMove<TPuzzle> puzzleMove)
         {
-            for (int i = 0; i < Puzzle.Length; i++)
-                if (Puzzle[row, i].Equals(number) || Puzzle[i, column].Equals(number))
-                    return false;
-            return true;
+            if (puzzleMove is SudokuMove sudokuMove)
+            {
+                for (int i = 0; i < Puzzle.Length; i++)
+                    if (Puzzle[sudokuMove.Row, i].Equals(sudokuMove.Number) || Puzzle[i, sudokuMove.Column].Equals(sudokuMove.Number))
+                        return false;
+                return true;
+            }
+            else
+                throw new Exception("Invalid PuzzleMove type for Sudoku");
         }
     }
 }

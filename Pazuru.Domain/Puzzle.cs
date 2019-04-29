@@ -19,7 +19,7 @@ namespace Pazuru.Domain
                 byte byteValue = Buffer.GetByte(PuzzleState.Value, index);
                 return byteValue - 48;
             }
-            set
+            protected set
             {
                 byte byteValue = (byte)(value + 48);
                 int index = (row * Length) + column;
@@ -36,7 +36,15 @@ namespace Pazuru.Domain
         {
             puzzleRules.Add(puzzleRule);
         }
-
+        public abstract bool ExecuteMove<TPuzzle>(PuzzleMove<TPuzzle> puzzleMove) where TPuzzle : Puzzle;
+        public abstract bool UndoMove<TPuzzle>(PuzzleMove<TPuzzle> puzzleMove) where TPuzzle : Puzzle;
+        public PuzzleState CopyPuzzleState()
+        {
+            byte[] bytes = new byte[PuzzleState.Value.Length];
+            Buffer.BlockCopy(PuzzleState.Value, 0, bytes, 0, PuzzleState.Value.Length);
+            return new PuzzleState(bytes);
+        }
+        
         public void Dispose()
         {
             puzzleRules.Clear();

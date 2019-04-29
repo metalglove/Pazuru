@@ -10,16 +10,21 @@ namespace Pazuru.Sudoku.Rules
 
         }
 
-        public override bool IsValid(int row, int column, int number)
+        public override bool IsValid<TPuzzle>(PuzzleMove<TPuzzle> puzzleMove)
         {
-            int sqrt = (int)Math.Sqrt(Puzzle.Length);
-            int x = row - row % sqrt;
-            int y = column - column % sqrt;
-            for (int i = x; i < x + sqrt; i++)
-                for (int j = y; j < y + sqrt; j++)
-                    if (Puzzle[i, j].Equals(number))
-                        return false;
-            return true;
+            if (puzzleMove is SudokuMove sudokuMove)
+            {
+                int sqrt = (int)Math.Sqrt(Puzzle.Length);
+                int x = sudokuMove.Row - sudokuMove.Row % sqrt;
+                int y = sudokuMove.Column - sudokuMove.Column % sqrt;
+                for (int i = x; i < x + sqrt; i++)
+                    for (int j = y; j < y + sqrt; j++)
+                        if (Puzzle[i, j].Equals(sudokuMove.Number))
+                            return false;
+                return true;
+            }
+            else
+                throw new Exception("Invalid PuzzleMove type for Sudoku");
         }
     }
 }
