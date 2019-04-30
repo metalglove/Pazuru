@@ -42,9 +42,9 @@ namespace Pazuru.Sudoku
         }
         private bool TryFindEmptyCell(out int row, out int column)
         {
-            for (int i = 0; i < Puzzle.Length; i++)
+            for (int i = 0; i < Puzzle.Size; i++)
             {
-                for (int j = 0; j < Puzzle.Length; j++)
+                for (int j = 0; j < Puzzle.Size; j++)
                 {
                     if (Puzzle[i, j].Equals(0))
                     {
@@ -61,9 +61,9 @@ namespace Pazuru.Sudoku
         private bool GridHasEmptyCell()
         {
             HashSet<int> index = new HashSet<int>();
-            for (int i = 0; i < Puzzle.Length; i++)
+            for (int i = 0; i < Puzzle.Size; i++)
             {
-                for (int j = 0; j < Puzzle.Length; j++)
+                for (int j = 0; j < Puzzle.Size; j++)
                 {
                     index.Add(Puzzle[i, j]);
                 }

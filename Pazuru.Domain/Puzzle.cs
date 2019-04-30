@@ -30,19 +30,19 @@ namespace Pazuru.Domain
         public string Name => GetType().Name;
         public abstract string Description { get; }
         public PuzzleState PuzzleState { get; }
-        public abstract int Length { get; }
+        public abstract int Size { get; }
         public virtual int this[int row, int column]
         {
             get
             {
-                int index = (row * Length) + column;
+                int index = (row * Size) + column;
                 byte byteValue = Buffer.GetByte(PuzzleState.Value, index);
                 return byteValue - 48;
             }
             protected set
             {
                 byte byteValue = (byte)(value + 48);
-                int index = (row * Length) + column;
+                int index = (row * Size) + column;
                 Buffer.SetByte(PuzzleState.Value, index, byteValue);
             }
         }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 namespace Pazuru.Domain.Exceptions
 {
@@ -7,6 +6,7 @@ namespace Pazuru.Domain.Exceptions
     {
         public PuzzleIsNotYetSolvedException() : base("Puzzle is not yet solved!")
         {
+
         }
     }
 }

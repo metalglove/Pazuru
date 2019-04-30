@@ -9,6 +9,7 @@ namespace Pazuru.Hitori
         public int Row { get; }
         public int Column { get; }
         public HitoriMoveColourKey HitoriMoveColourKey { get; }
+        public HitoriMoveColourKey HitoriMoveColourKeyBefore { get; }
 
         public HitoriMove(int row, int column, HitoriMoveColourKey hitoriMoveColourKey)
         {
@@ -31,10 +32,10 @@ namespace Pazuru.Hitori
     public enum HitoriMoveColourKey
     {
         [Description("Undecided")]
-        Grey,
+        Grey = 'G',
         [Description("Eliminated")]
-        Black,
+        Black = 'B',
         [Description("In final solution")]
-        White
+        White = 'W'
     }
 }

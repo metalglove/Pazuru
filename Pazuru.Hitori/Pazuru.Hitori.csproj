@@ -8,8 +8,4 @@
     <ProjectReference Include="..\Pazuru.Domain\Pazuru.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Rules\" />
-  </ItemGroup>
-
 </Project>

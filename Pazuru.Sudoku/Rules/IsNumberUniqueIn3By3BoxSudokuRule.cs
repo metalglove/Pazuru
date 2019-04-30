@@ -12,7 +12,7 @@ namespace Pazuru.Sudoku.Rules
 
         public override bool IsValid(SudokuMove sudokuMove)
         {
-            int sqrt = (int)Math.Sqrt(Puzzle.Length);
+            int sqrt = (int)Math.Sqrt(Puzzle.Size);
             int x = sudokuMove.Row - sudokuMove.Row % sqrt;
             int y = sudokuMove.Column - sudokuMove.Column % sqrt;
             for (int i = x; i < x + sqrt; i++)

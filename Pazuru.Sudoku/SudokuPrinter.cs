@@ -10,8 +10,8 @@ namespace Pazuru.Sudoku
         {
             StringBuilder stringBuilder = new StringBuilder();
             const int deciderWidth = 2;
-            int width = puzzle.Length;
-            int length = puzzle.Length;
+            int width = puzzle.Size;
+            int length = puzzle.Size;
             int decider = width * deciderWidth * 2;
             int newDecider = (decider - 6) / 2;
             stringBuilder.Append($"{CellVerticalLine.ToString().PadRight(newDecider, ' ')}Sudoku{"".PadRight(newDecider, ' ')}");
