@@ -1,19 +1,14 @@
 ﻿namespace Pazuru.Domain
 {
-    public abstract class PuzzleRule<TPuzzleType> : IPuzzleRule where TPuzzleType : Puzzle
+    public abstract class PuzzleRule<TPuzzleMove, TPuzzle>  where TPuzzle : Puzzle where TPuzzleMove : PuzzleMove<TPuzzle>
     {
-        protected TPuzzleType Puzzle { get; }
+        protected TPuzzle Puzzle { get; }
 
-        public PuzzleRule(TPuzzleType puzzle)
+        public PuzzleRule(TPuzzle puzzle)
         {
             Puzzle = puzzle;
         }
 
-        public abstract bool IsValid<TPuzzle>(PuzzleMove<TPuzzle> puzzleMove) where TPuzzle : Puzzle;
-    }
-
-    public interface IPuzzleRule
-    {
-        bool IsValid<TPuzzle>(PuzzleMove<TPuzzle> puzzleMove) where TPuzzle : Puzzle;
+        public abstract bool IsValid(TPuzzleMove puzzleMove);
     }
 }

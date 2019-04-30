@@ -3,10 +3,30 @@ using System.Collections.Generic;
 
 namespace Pazuru.Domain
 {
-    public abstract class Puzzle : IDisposable
+    public abstract class Puzzle<TPuzzleMove, TPuzzle> : Puzzle where TPuzzle : Puzzle where TPuzzleMove : PuzzleMove<TPuzzle>
     {
-        private readonly List<IPuzzleRule> puzzleRules = new List<IPuzzleRule>();
-        public IReadOnlyCollection<IPuzzleRule> PuzzleRules => puzzleRules;
+        private readonly List<PuzzleRule<TPuzzleMove, TPuzzle>> puzzleRules = new List<PuzzleRule<TPuzzleMove, TPuzzle>>();
+        public IReadOnlyCollection<PuzzleRule<TPuzzleMove, TPuzzle>> PuzzleRules => puzzleRules;
+
+        protected Puzzle(PuzzleState puzzleState) : base(puzzleState)
+        {
+
+        }
+
+        protected void AddRule(PuzzleRule<TPuzzleMove, TPuzzle> puzzleRule) 
+        {
+            puzzleRules.Add(puzzleRule);
+        }
+        public abstract bool ExecuteMove(TPuzzleMove puzzleMove);
+        public abstract bool UndoMove(TPuzzleMove puzzleMove);
+        public override void Dispose()
+        {
+            puzzleRules.Clear();
+        }
+    }
+
+    public abstract class Puzzle : IDisposable
+    {   
         public string Name => GetType().Name;
         public abstract string Description { get; }
         public PuzzleState PuzzleState { get; }
@@ -32,22 +52,13 @@ namespace Pazuru.Domain
             PuzzleState = puzzleState;
         }
 
-        protected void AddRule(IPuzzleRule puzzleRule)
-        {
-            puzzleRules.Add(puzzleRule);
-        }
-        public abstract bool ExecuteMove<TPuzzle>(PuzzleMove<TPuzzle> puzzleMove) where TPuzzle : Puzzle;
-        public abstract bool UndoMove<TPuzzle>(PuzzleMove<TPuzzle> puzzleMove) where TPuzzle : Puzzle;
         public PuzzleState CopyPuzzleState()
         {
             byte[] bytes = new byte[PuzzleState.Value.Length];
             Buffer.BlockCopy(PuzzleState.Value, 0, bytes, 0, PuzzleState.Value.Length);
             return new PuzzleState(bytes);
         }
-        
-        public void Dispose()
-        {
-            puzzleRules.Clear();
-        }
+
+        public abstract void Dispose();
     }
 }
