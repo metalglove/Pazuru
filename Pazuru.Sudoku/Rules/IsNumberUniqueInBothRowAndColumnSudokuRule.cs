@@ -2,17 +2,17 @@
 
 namespace Pazuru.Sudoku.Rules
 {
-    public sealed class IsNumberUniqueInBothRowAndColumnSudokuRule : PuzzleRule<SudokuPuzzle>
+    public sealed class IsNumberUniqueInBothRowAndColumnSudokuRule : PuzzleRule<SudokuMove, SudokuPuzzle>
     {
         public IsNumberUniqueInBothRowAndColumnSudokuRule(SudokuPuzzle sudoku) : base(sudoku)
         {
 
         }
 
-        public override bool IsValid(int row, int column, int number)
+        public override bool IsValid(SudokuMove sudokuMove)
         {
             for (int i = 0; i < Puzzle.Length; i++)
-                if (Puzzle[row, i].Equals(number) || Puzzle[i, column].Equals(number))
+                if (Puzzle[sudokuMove.Row, i].Equals(sudokuMove.Number) || Puzzle[i, sudokuMove.Column].Equals(sudokuMove.Number))
                     return false;
             return true;
         }

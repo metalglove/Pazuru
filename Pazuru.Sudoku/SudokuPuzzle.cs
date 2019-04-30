@@ -1,9 +1,10 @@
 ﻿using Pazuru.Domain;
 using Pazuru.Sudoku.Rules;
+using System;
 
 namespace Pazuru.Sudoku
 {
-    public sealed class SudokuPuzzle : Puzzle
+    public sealed class SudokuPuzzle : Puzzle<SudokuMove, SudokuPuzzle>
     {
         public override int Length => 9;
         public override string Description =>
@@ -15,6 +16,23 @@ namespace Pazuru.Sudoku
         {
             AddRule(new IsNumberUniqueInBothRowAndColumnSudokuRule(this));
             AddRule(new IsNumberUniqueIn3By3BoxSudokuRule(this));
+        }
+
+ 
+        public override bool ExecuteMove(SudokuMove sudokuMove)
+        {
+            if (!sudokuMove.IsValid)
+                return false;
+            this[sudokuMove.Row, sudokuMove.Column] = sudokuMove.Number;
+            return true;
+        }
+
+        public override bool UndoMove(SudokuMove sudokuMove)
+        {
+            if (!sudokuMove.IsValid)
+                return false;
+            this[sudokuMove.Row, sudokuMove.Column] = sudokuMove.NumberBefore;
+            return true;
         }
     }
 }

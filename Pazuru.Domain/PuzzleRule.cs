@@ -1,6 +1,6 @@
 ﻿namespace Pazuru.Domain
 {
-    public abstract class PuzzleRule<TPuzzle> : IPuzzleRule where TPuzzle : Puzzle
+    public abstract class PuzzleRule<TPuzzleMove, TPuzzle>  where TPuzzle : Puzzle where TPuzzleMove : PuzzleMove<TPuzzle>
     {
         protected TPuzzle Puzzle { get; }
 
@@ -9,11 +9,6 @@
             Puzzle = puzzle;
         }
 
-        public abstract bool IsValid(int row, int column, int number);
-    }
-
-    public interface IPuzzleRule
-    {
-        bool IsValid(int row, int column, int number);
+        public abstract bool IsValid(TPuzzleMove puzzleMove);
     }
 }
