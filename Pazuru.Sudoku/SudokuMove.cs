@@ -20,7 +20,7 @@ namespace Pazuru.Sudoku
 
         public override bool Execute(SudokuPuzzle puzzle)
         {
-            IsValid = !puzzle.PuzzleRules.Any(rule => !rule.IsValid(this));
+            IsValid = puzzle.PuzzleRules.All(rule => rule.IsValid(this));
             if (!IsValid)
                 return false;
 

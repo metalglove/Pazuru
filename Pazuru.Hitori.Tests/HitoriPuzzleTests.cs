@@ -40,13 +40,13 @@ namespace Pazuru.Hitori.Tests
         }
 
         [TestMethod]
-        public void SetChar_Should_Set_G_To_B_With_Row_2_And_Column_2_And_HitoriMoveColourKey_Black()
+        public void SetChar_Should_Set_G_To_B_With_Row_2_And_Column_2_And_HitoriMoveColorKey_Black()
         {
             // Arrange
             const char expectedCharAt2_2 = 'B';
 
             // Act
-            HitoriPuzzle.SetChar(2, 2, HitoriMoveColourKey.Black);
+            HitoriPuzzle.SetChar(2, 2, HitoriMoveColorKey.Black);
             char charAt2_2 = HitoriPuzzle.GetChar(2, 2);
 
             // Assert

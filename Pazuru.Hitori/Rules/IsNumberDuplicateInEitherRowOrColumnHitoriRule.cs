@@ -16,11 +16,11 @@ namespace Pazuru.Hitori.Rules
             {
                 if (Puzzle[hitoriMove.Row, i].Equals(number) &&
                     hitoriMove.Column != i &&
-                    Puzzle.GetChar(hitoriMove.Row, i) != (char)HitoriMoveColourKey.Black 
+                    Puzzle.GetChar(hitoriMove.Row, i) != (char)HitoriMoveColorKey.Black 
                     || 
                     Puzzle[i, hitoriMove.Column].Equals(number) &&
                     hitoriMove.Row != i &&
-                    Puzzle.GetChar(i, hitoriMove.Column) != (char)HitoriMoveColourKey.Black)
+                    Puzzle.GetChar(i, hitoriMove.Column) != (char)HitoriMoveColorKey.Black)
                 {
                     return true;
                 }

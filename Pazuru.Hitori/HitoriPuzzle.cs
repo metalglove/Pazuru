@@ -35,9 +35,9 @@ namespace Pazuru.Hitori
         {
             return (char)(base[row * 2, (column * 2) + 1] + 48);
         }
-        public void SetChar(int row, int column, HitoriMoveColourKey colourKey)
+        public void SetChar(int row, int column, HitoriMoveColorKey colorKey)
         {
-            base[row * 2, (column * 2) + 1] = (char)colourKey - 48;
+            base[row * 2, (column * 2) + 1] = (char)colorKey - 48;
         }
     }
 }

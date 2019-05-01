@@ -1,6 +1,5 @@
 ﻿using Pazuru.Domain;
 using System;
-using System.ComponentModel;
 
 namespace Pazuru.Hitori
 {
@@ -8,14 +7,14 @@ namespace Pazuru.Hitori
     {
         public int Row { get; }
         public int Column { get; }
-        public HitoriMoveColourKey HitoriMoveColourKey { get; }
-        public HitoriMoveColourKey HitoriMoveColourKeyBefore { get; }
+        public HitoriMoveColorKey HitoriMoveColorKey { get; }
+        public HitoriMoveColorKey HitoriMoveColorKeyBefore { get; }
 
-        public HitoriMove(int row, int column, HitoriMoveColourKey hitoriMoveColourKey)
+        public HitoriMove(int row, int column, HitoriMoveColorKey hitoriMoveColorKey)
         {
             Row = row;
             Column = column;
-            HitoriMoveColourKey = hitoriMoveColourKey;
+            HitoriMoveColorKey = hitoriMoveColorKey;
         }
 
         public override bool Execute(HitoriPuzzle puzzle)
@@ -27,15 +26,5 @@ namespace Pazuru.Hitori
         {
             throw new NotImplementedException();
         }
-    }
-
-    public enum HitoriMoveColourKey
-    {
-        [Description("Undecided")]
-        Grey = 'G',
-        [Description("Eliminated")]
-        Black = 'B',
-        [Description("In final solution")]
-        White = 'W'
     }
 }

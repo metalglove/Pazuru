@@ -2,17 +2,17 @@
 {
     public abstract class PuzzlePrinter<TPuzzle> where TPuzzle : Puzzle
     {
-        protected const char CellLeftTop = '┌';
-        protected const char CellRightTop = '┐';
-        protected const char CellLeftBottom = '└';
-        protected const char CellRightBottom = '┘';
-        protected const char CellHorizontalJointTop = '┬';
-        protected const char CellHorizontalJointBottom = '┴';
-        protected const char CellVerticalJointLeft = '├';
-        protected const char CellTJoint = '┼';
-        protected const char CellVerticalJointRight = '┤';
-        protected const char CellHorizontalLine = '─';
-        protected const char CellVerticalLine = '│';
+        protected const char LeftTop = '┌';
+        protected const char RightTop = '┐';
+        protected const char LeftBottom = '└';
+        protected const char RightBottom = '┘';
+        protected const char HorizontalJointTop = '┬';
+        protected const char HorizontalJointBottom = '┴';
+        protected const char VerticalJointLeft = '├';
+        protected const char Joint = '┼';
+        protected const char VerticalJointRight = '┤';
+        protected const char HorizontalLine = '─';
+        protected const char VerticalLine = '│';
 
         public abstract string Print(TPuzzle puzzle);
     }
