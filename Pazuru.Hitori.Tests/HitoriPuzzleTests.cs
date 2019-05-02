@@ -27,30 +27,40 @@ namespace Pazuru.Hitori.Tests
         }
 
         [TestMethod]
-        public void GetChar_Should_Return_G_With_Row_2_And_Column_2()
+        public void GetChar_Should_Return_N_With_Row_2_And_Column_2()
         {
             // Arrange
-            const char expectedCharAt2_2 = 'G';
+            HitoriMoveColorKey expectedCharAt2_2 = HitoriMoveColorKey.None;
 
             // Act
-            char charAt2_2 = HitoriPuzzle.GetChar(2, 2);
+            HitoriMoveColorKey charAt2_2 = HitoriPuzzle.GetColorKey(2, 2);
 
             // Asserts
             Assert.AreEqual(expectedCharAt2_2, charAt2_2);
         }
 
         [TestMethod]
-        public void SetChar_Should_Set_G_To_B_With_Row_2_And_Column_2_And_HitoriMoveColorKey_Black()
+        public void Solve_Hitori()
         {
-            // Arrange
-            const char expectedCharAt2_2 = 'B';
-
-            // Act
-            HitoriPuzzle.SetChar(2, 2, HitoriMoveColorKey.Black);
-            char charAt2_2 = HitoriPuzzle.GetChar(2, 2);
-
-            // Assert
-            Assert.AreEqual(expectedCharAt2_2, charAt2_2);
+            HitoriGenerator hitoriGenerator = new HitoriGenerator();
+            HitoriPuzzle hitoriPuzzle = hitoriGenerator.Generate();
+            HitoriSolver hitoriSolver = new HitoriSolver(hitoriPuzzle);
+            bool isSolved = hitoriSolver.Solve();
+            Assert.IsTrue(isSolved);
         }
+
+        //[TestMethod]
+        //public void SetChar_Should_Set_G_To_B_With_Row_2_And_Column_2_And_HitoriMoveColorKey_Black()
+        //{
+        //    // Arrange
+        //    const char expectedCharAt2_2 = 'B';
+
+        //    // Act
+        //    HitoriPuzzle.SetChar(2, 2, HitoriMoveColorKey.Black);
+        //    char charAt2_2 = HitoriPuzzle.GetChar(2, 2);
+
+        //    // Assert
+        //    Assert.AreEqual(expectedCharAt2_2, charAt2_2);
+        //}
     }
 }

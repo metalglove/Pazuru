@@ -4,6 +4,8 @@ namespace Pazuru.Hitori
 {
     public enum HitoriMoveColorKey
     {
+        [Description("Unset")]
+        None = 'N',
         [Description("Undecided")]
         Grey = 'G',
         [Description("Eliminated")]

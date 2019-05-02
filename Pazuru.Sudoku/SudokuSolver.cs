@@ -25,17 +25,15 @@ namespace Pazuru.Sudoku
             for (int number = 1; number <= 9; number++)
             {
                 SudokuMove sudokuMove = new SudokuMove(row, column, number);
-                if (sudokuMove.Execute(Puzzle))
-                {
-                    AddPuzzleState();
-                    if (RecursiveSolve())
-                    {
-                        return true;
-                    }
+                if (!sudokuMove.Execute(Puzzle))
+                    continue;
 
-                    sudokuMove.Undo(Puzzle);
-                    AddPuzzleState();
-                }
+                AddPuzzleState();
+                if (RecursiveSolve())
+                    return true;
+
+                sudokuMove.Undo(Puzzle);
+                AddPuzzleState();
             }
 
             return false;
@@ -46,12 +44,11 @@ namespace Pazuru.Sudoku
             {
                 for (int j = 0; j < Puzzle.Size; j++)
                 {
-                    if (Puzzle[i, j].Equals(0))
-                    {
-                        row = i;
-                        column = j;
-                        return true;
-                    }
+                    if (!Puzzle[i, j].Equals(0))
+                        continue;
+                    row = i;
+                    column = j;
+                    return true;
                 }
             }
             row = 0;

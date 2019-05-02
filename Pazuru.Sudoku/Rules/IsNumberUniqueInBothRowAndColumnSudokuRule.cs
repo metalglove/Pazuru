@@ -12,7 +12,8 @@ namespace Pazuru.Sudoku.Rules
         public override bool IsValid(SudokuMove sudokuMove)
         {
             for (int i = 0; i < Puzzle.Size; i++)
-                if (Puzzle[sudokuMove.Row, i].Equals(sudokuMove.Number) || Puzzle[i, sudokuMove.Column].Equals(sudokuMove.Number))
+                if (Puzzle[sudokuMove.Row, i].Equals(sudokuMove.Number) || 
+                    Puzzle[i, sudokuMove.Column].Equals(sudokuMove.Number))
                     return false;
             return true;
         }

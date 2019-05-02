@@ -8,19 +8,26 @@ namespace Pazuru.Hitori
         public override HitoriPuzzle Generate()
         {
             byte[] grid = Encoding.Default.GetBytes(
-                "2G7G1G5G4G7G2G5G9G" +
-                "2G8G5G6G3G4G9G5G3G" +
-                "4G4G8G2G9G5G5G7G2G" +
-                "6G9G9G7G7G1G3G1G5G" +
-                "9G9G5G8G6G7G7G3G2G" +
-                "5G5G9G8G8G9G6G4G4G" +
-                "5G4G2G1G7G9G1G2G6G" +
-                "8G7G2G4G3G5G7G1G4G" +
-                "8G2G6G4G5G4G1G2G8G");
+                "2N7N1N5N4N7N2N5N9N" +
+                "2N8N5N6N3N4N9N5N3N" +
+                "4N4N8N2N9N5N5N7N2N" +
+                "6N9N9N7N7N1N3N1N5N" +
+                "9N9N5N8N6N7N7N3N2N" +
+                "5N5N9N8N8N9N6N4N4N" +
+                "5N4N2N1N7N9N1N2N6N" +
+                "8N7N2N4N3N5N7N1N4N" +
+                "8N2N6N4N5N4N1N2N8N");
+
+            byte[] grid5 = Encoding.Default.GetBytes(
+                "2N2N1N5N3N" +
+                  "2N3N1N4N5N" +
+                  "1N1N1N3N5N" +
+                  "1N3N5N4N2N" + 
+                  "5N4N3N2N1N"); 
             //271547259285634953448295572699771315995867732559889644542179126872435714826454128
             //BWWWWBWBWWWBWBWWWWWBWWWBWWBWWBWBWWBWWBWWWWBWWBWWBWBWWBWWBWWWBWWWBWBWWWWWBWWWWBWBW
-            PuzzleState puzzleState = new PuzzleState(grid);
-            HitoriPuzzle hitoriPuzzle = new HitoriPuzzle(puzzleState, 9);
+            PuzzleState puzzleState = new PuzzleState(grid5);
+            HitoriPuzzle hitoriPuzzle = new HitoriPuzzle(puzzleState, 5);
             return hitoriPuzzle;
         }
     }

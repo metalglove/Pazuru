@@ -17,25 +17,32 @@ namespace Pazuru.Hitori
             protected set => base[row * 2, column * 2] = value;
         }
 
-        public HitoriPuzzle(PuzzleState puzzleState, int length = 9) : base(puzzleState)
+        public HitoriPuzzle(PuzzleState puzzleState, int size = 9) : base(puzzleState)
         {
-            Size = length;
+            Size = size;
             AddRule(new IsNumberDuplicateInEitherRowOrColumnHitoriRule(this));
+            AddRule(new AreWhiteSquaresConnectedByEitherHorizontalOrVerticalAndBlackSquaresNotHitoriRule(this));
         }
 
         public override bool ExecuteMove(HitoriMove hitoriMove)
         {
-            throw new System.NotImplementedException();
+            if (!hitoriMove.IsValid)
+                return false;
+            SetChar(hitoriMove.Row, hitoriMove.Column, hitoriMove.HitoriMoveColorKey);
+            return true;
         }
         public override bool UndoMove(HitoriMove hitoriMove)
         {
-            throw new System.NotImplementedException();
+            if (!hitoriMove.IsValid)
+                return false;
+            SetChar(hitoriMove.Row, hitoriMove.Column, hitoriMove.HitoriMoveColorKeyBefore);
+            return true;
         }
-        public char GetChar(int row, int column)
+        public HitoriMoveColorKey GetColorKey(int row, int column)
         {
-            return (char)(base[row * 2, (column * 2) + 1] + 48);
+            return (HitoriMoveColorKey)(char)(base[row * 2, (column * 2) + 1] + 48);
         }
-        public void SetChar(int row, int column, HitoriMoveColorKey colorKey)
+        private void SetChar(int row, int column, HitoriMoveColorKey colorKey)
         {
             base[row * 2, (column * 2) + 1] = (char)colorKey - 48;
         }
