@@ -110,10 +110,9 @@ namespace Pazuru.Hitori
 
         /// <summary>
         /// Pair induction, where a row or column contains three same-numbers but only two of them are an adjacent pair.
-        /// In row 4 of this example there are three 5s, two of which are an adjacent pair and one which is single.
-        /// If the single 5 is un-shaded, then according to the first rule of Hitori the adjacent pair of 5s must be shaded.
-        /// But this would violate the second rule which says shaded squares must not touch each other vertically or horizontally.
-        /// Therefore the 5 in square b4 must be shaded.
+        /// If a single square is None, then according to the first rule of Hitori the adjacent pairs must be Black.
+        /// But this would violate the second rule which says Black squares must not touch each other vertically or horizontally.
+        /// Therefore the loner square must be Black.
         /// </summary>
         private void SearchForPairInduction()
         {
@@ -140,15 +139,16 @@ namespace Pazuru.Hitori
                     {
                         int number = array[i];
                         if (number.Equals(key))
-                        {
                             numberIndexes.Add(i);
-                        }
                     }
 
-                    if (numberIndexes.First() + 1 == numberIndexes[1])
+                    bool first = numberIndexes.First() + 1 == numberIndexes[1];
+
+                    int column = first ? numberIndexes.Last() : numberIndexes.First();
+                    if (Puzzle.GetColorKey(horizontal ? indexer : column, horizontal ? column : indexer) == HitoriMoveColorKey.None)
                         IfPositionIsValidExecuteMoveAndAddToMovesList(
-                            horizontal ? indexer : numberIndexes.Last(),
-                            horizontal ? numberIndexes.Last() : indexer, 
+                            horizontal ? indexer : column,
+                            horizontal ? column : indexer,
                             HitoriMoveColorKey.Black);
                 }
             }
