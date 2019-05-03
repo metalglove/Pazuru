@@ -2,7 +2,6 @@
 {
     public readonly ref struct HitoriCell
     {
-
         private readonly HitoriMoveColorKey? _up;
         private readonly HitoriMoveColorKey? _down;
         private readonly HitoriMoveColorKey? _right;
