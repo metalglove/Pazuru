@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Pazuru.Mapping;
 
-namespace Pazuru.Presentation.Web
+namespace Pazuru.Presentation.Web.BackEnd
 {
     internal class Startup
     {

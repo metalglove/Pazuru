@@ -3,21 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28809.33
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pazuru.Application", "Pazuru.Application\Pazuru.Application.csproj", "{6B663222-A4F8-4E3C-BEE3-1AD22BB64F30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pazuru.Application", "Pazuru.Application\Pazuru.Application.csproj", "{6B663222-A4F8-4E3C-BEE3-1AD22BB64F30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pazuru.Domain", "Pazuru.Domain\Pazuru.Domain.csproj", "{DF566ED4-E273-4B60-9F9D-1FFE26493AE9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pazuru.Domain", "Pazuru.Domain\Pazuru.Domain.csproj", "{DF566ED4-E273-4B60-9F9D-1FFE26493AE9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pazuru.Infrastructure", "Pazuru.Infrastructure\Pazuru.Infrastructure.csproj", "{75B6E6EF-94AF-4E2F-B5C3-D804C87B61C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pazuru.Infrastructure", "Pazuru.Infrastructure\Pazuru.Infrastructure.csproj", "{75B6E6EF-94AF-4E2F-B5C3-D804C87B61C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pazuru.Presentation.CLI", "Pazuru.Presentation.CLI\Pazuru.Presentation.CLI.csproj", "{A0A6A4BC-FA4B-4A59-ADD0-B2F1A163C0DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pazuru.Presentation.CLI", "Pazuru.Presentation.CLI\Pazuru.Presentation.CLI.csproj", "{A0A6A4BC-FA4B-4A59-ADD0-B2F1A163C0DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pazuru.Presentation.Web", "Pazuru.Presentation.Web\Pazuru.Presentation.Web.csproj", "{FD2A8BD9-B1CD-4174-ACD9-CD448CD158BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pazuru.Presentation.Web.BackEnd", "Pazuru.Presentation.Web\Pazuru.Presentation.Web.BackEnd.csproj", "{FD2A8BD9-B1CD-4174-ACD9-CD448CD158BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pazuru.Infrastructure.Networking", "Pazuru.Infrastructure.Networking\Pazuru.Infrastructure.Networking.csproj", "{454BAC88-5D1B-44A2-B59C-B09FF570D911}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pazuru.Infrastructure.Networking", "Pazuru.Infrastructure.Networking\Pazuru.Infrastructure.Networking.csproj", "{454BAC88-5D1B-44A2-B59C-B09FF570D911}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pazuru.Sudoku", "Pazuru.Sudoku\Pazuru.Sudoku.csproj", "{77CE56BA-7AFA-4219-BCEE-503438EAD2BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pazuru.Sudoku", "Pazuru.Sudoku\Pazuru.Sudoku.csproj", "{77CE56BA-7AFA-4219-BCEE-503438EAD2BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pazuru.Mapping", "Pazuru.Mapping\Pazuru.Mapping.csproj", "{7C49A5D2-ED0F-4E01-A714-8B0575DD3D3E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pazuru.Mapping", "Pazuru.Mapping\Pazuru.Mapping.csproj", "{7C49A5D2-ED0F-4E01-A714-8B0575DD3D3E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
