@@ -1,18 +1,18 @@
 <template >
-    <Sudoku 
-    v-if="puzzleViewModel.name === 'Sudoku'" 
-    v-bind:sudokuViewModel="sudokuViewModel"/>
+    <Sudoku v-if="puzzleViewModel.name === 'Sudoku'" 
+            v-bind:sudokuViewModel="sudokuViewModel"/>
     <Hitori v-else-if="puzzleViewModel.name === 'Hitori'"/>
     <EmptyPuzzle v-else />
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import Sudoku from '@/components/puzzles/Sudoku.vue';
-import Hitori from '@/components/puzzles/Hitori.vue';
+import Sudoku from '@/components/puzzles/Sudoku/Sudoku.vue';
+import Hitori from '@/components/puzzles/Hitori/Hitori.vue';
 import EmptyPuzzle from '@/components/puzzles/EmptyPuzzle.vue';
 import { PuzzleViewModel } from '@/viewmodels/PuzzleViewModel';
 import { SudokuViewModel, Cell } from '../viewmodels/SudokuViewModel';
+
 @Component({
     components: {
         Sudoku,
