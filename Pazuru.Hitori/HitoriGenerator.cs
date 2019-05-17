@@ -23,10 +23,17 @@ namespace Pazuru.Hitori
                   "2N3N1N4N5N" +
                   "1N1N1N3N5N" +
                   "1N3N5N4N2N" + 
-                  "5N4N3N2N1N"); 
+                  "5N4N3N2N1N");
+
+            byte[] gri2d5 = Encoding.Default.GetBytes(
+                  "3N4N2N2N4N" +
+                  "2N3N2N4N5N" +
+                  "2N5N4N5N2N" +
+                  "4N5N1N5N2N" +
+                  "5N3N3N1N4N");
             //271547259285634953448295572699771315995867732559889644542179126872435714826454128
             //BWWWWBWBWWWBWBWWWWWBWWWBWWBWWBWBWWBWWBWWWWBWWBWWBWBWWBWWBWWWBWWWBWBWWWWWBWWWWBWBW
-            PuzzleState puzzleState = new PuzzleState(grid5);
+            PuzzleState puzzleState = new PuzzleState(gri2d5);
             HitoriPuzzle hitoriPuzzle = new HitoriPuzzle(puzzleState, 5);
             return hitoriPuzzle;
         }

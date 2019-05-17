@@ -15,7 +15,7 @@ namespace Pazuru.Hitori.Rules
             {
                 for (int j = 0; j < Puzzle.Size; j++)
                 {
-                    HitoriCell currentCell = new HitoriCell(Puzzle, i, j);
+                    ExtendedHitoriCell currentCell = new ExtendedHitoriCell(Puzzle, i, j);
                     if (currentCell.ColorKey == HitoriMoveColorKey.White &&
                         !currentCell.IsConnectedByEitherHorizontalOrVertical(HitoriMoveColorKey.White)
                         ||

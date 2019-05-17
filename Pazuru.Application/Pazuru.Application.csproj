@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Pazuru.Domain\Pazuru.Domain.csproj" />
+    <ProjectReference Include="..\Pazuru.Hitori\Pazuru.Hitori.csproj" />
     <ProjectReference Include="..\Pazuru.Sudoku\Pazuru.Sudoku.csproj" />
   </ItemGroup>
 

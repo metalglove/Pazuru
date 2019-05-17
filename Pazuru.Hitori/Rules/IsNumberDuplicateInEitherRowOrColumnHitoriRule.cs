@@ -11,7 +11,7 @@ namespace Pazuru.Hitori.Rules
 
         public override bool IsValid(HitoriMove hitoriMove)
         {
-            HitoriCell currentCell = new HitoriCell(Puzzle, hitoriMove.Row, hitoriMove.Column);
+            ExtendedHitoriCell currentCell = new ExtendedHitoriCell(Puzzle, hitoriMove.Row, hitoriMove.Column);
             for (int i = 0; i < Puzzle.Size; i++)
             {
                 if (Puzzle[hitoriMove.Row, i].Equals(currentCell.Number) &&

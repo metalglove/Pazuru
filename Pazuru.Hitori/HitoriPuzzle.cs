@@ -20,8 +20,8 @@ namespace Pazuru.Hitori
         public HitoriPuzzle(PuzzleState puzzleState, int size = 9) : base(puzzleState)
         {
             Size = size;
-            AddRule(new IsNumberDuplicateInEitherRowOrColumnHitoriRule(this));
-            AddRule(new AreWhiteSquaresConnectedByEitherHorizontalOrVerticalAndBlackSquaresNotHitoriRule(this));
+            //AddRule(new IsNumberDuplicateInEitherRowOrColumnHitoriRule(this));
+            //AddRule(new AreWhiteSquaresConnectedByEitherHorizontalOrVerticalAndBlackSquaresNotHitoriRule(this));
         }
 
         public override bool ExecuteMove(HitoriMove hitoriMove)

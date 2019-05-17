@@ -1,6 +1,7 @@
 ﻿using Pazuru.Application.DTOs;
 using Pazuru.Application.Interfaces;
 using Pazuru.Domain;
+using Pazuru.Hitori;
 using Pazuru.Mapping;
 using Pazuru.Sudoku;
 using System;
@@ -16,15 +17,17 @@ namespace Pazuru.Presentation.CLI
             Startup startup = new Startup();
             await startup.InitializeAsync();
             IGenericServiceProvider serviceProvider = startup.GetServiceProvider();
-            IPuzzleService<SudokuPuzzle> puzzleService = serviceProvider.GetService<IPuzzleService<SudokuPuzzle>>();
-            SudokuPuzzle puzzle = puzzleService.Generate();
-            string beforePuzzle = puzzleService.Print(puzzle);
-            Console.WriteLine("Sudoku");
-            Console.Write(beforePuzzle);
+            //IPuzzleService<SudokuPuzzle> puzzleService = serviceProvider.GetService<IPuzzleService<SudokuPuzzle>>();
+            IPuzzleService<HitoriPuzzle> puzzleService = serviceProvider.GetService<IPuzzleService<HitoriPuzzle>>();
+            //SudokuPuzzle puzzle = puzzleService.Generate();
+            HitoriPuzzle puzzle = puzzleService.Generate();
+            //string beforePuzzle = puzzleService.Print(puzzle);
+            //Console.WriteLine("Sudoku");
+            Console.WriteLine("Hitori");
+            //Console.Write(beforePuzzle);
             Stopwatch stopwatch = Stopwatch.StartNew();
             PuzzleSolveDto puzzleSolveDto = puzzleService.Solve(puzzle);
             stopwatch.Stop();
-
             if (puzzleSolveDto.Success)
             {
                 Console.WriteLine($"Solved in: {stopwatch.ElapsedMilliseconds}ms");

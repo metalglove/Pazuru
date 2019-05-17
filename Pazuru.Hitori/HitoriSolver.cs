@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Pazuru.Domain;
+using Pazuru.Domain.Extensions;
 
 namespace Pazuru.Hitori
 {
@@ -32,14 +33,34 @@ namespace Pazuru.Hitori
             for (int i = 0; i < Puzzle.Size; i++)
                 yield return Puzzle[i, column];
         }
-
+        private static int CountOccuranceOfNumber(IEnumerable<int> collection, int number)
+        {
+            return collection.Count(num => num.Equals(number));
+        }
+        private IEnumerable<HitoriCell> GetOccurancesOfNumberInRow(int row, int number)
+        {
+            for (int column = 0; column < Puzzle.Size; column++)
+                if (Puzzle[row, column].Equals(number))
+                    yield return new HitoriCell(Puzzle, row, column);
+        }
+        private IEnumerable<HitoriCell> GetOccurancesOfNumberInColumn(int column, int number)
+        {
+            for (int row = 0; row < Puzzle.Size; row++)
+                if (Puzzle[row, column].Equals(number))
+                    yield return new HitoriCell(Puzzle, row, column);
+        }
+        private void ExecuteMoveAndAddToMovesList(int row, int column, HitoriMoveColorKey colorKey)
+        {
+            HitoriMove hitoriMove = new HitoriMove(row, column, colorKey);
+            hitoriMove.Execute(Puzzle);
+            AddPuzzleState();
+            HitoriMoves.Add(hitoriMove);
+        }
         private void IfPositionIsValidExecuteMoveAndAddToMovesList(int row, int column, HitoriMoveColorKey colorKey)
         {
             if (!IsPositionValid(row, column))
                 return;
-            HitoriMove hitoriMove = new HitoriMove(row, column, colorKey);
-            Puzzle.ExecuteMove(hitoriMove);
-            HitoriMoves.Add(hitoriMove);
+            ExecuteMoveAndAddToMovesList(row, column, colorKey);
         }
         #endregion Utilities
 
@@ -128,7 +149,7 @@ namespace Pazuru.Hitori
                 if (array.Length != Puzzle.Size)
                     throw new ArgumentOutOfRangeException(nameof(range));
 
-                IEnumerable<int> keys = array.GroupBy(num => num).Where(grouping => grouping.Count() == 3).Select(g => g.Key);
+                IEnumerable<int> keys = array.GroupBy(num => num).Where(grouping => grouping.Count().Equals(3)).Select(g => g.Key);
                 if (!keys.Any())
                     return;
                 
@@ -153,8 +174,89 @@ namespace Pazuru.Hitori
                 }
             }
         }
+
+        /// <summary>
+        /// The first rule of Hitori says same number cannot appear more than once in a row or a column. 
+        /// If a number is duplicate in a row or column and the other number is already White then that number can be marked Black.
+        /// </summary>
+        private void SearchForBlackSquaresInRowsAndColumns()
+        {
+            for (int row = 0; row < Puzzle.Size; row++)
+            {
+                for (int column = 0; column < Puzzle.Size - 3; column++)
+                {
+                    if (Puzzle.GetColorKey(row, column) == HitoriMoveColorKey.Black)
+                    {
+                        ExtendedHitoriCell hitoriCell = new ExtendedHitoriCell(Puzzle, row, column);
+                        if (hitoriCell.LeftCell.HasValue)
+                        {
+                            BlackSquaresInRowTechnique(hitoriCell.LeftCell.Value);
+                        }
+                        if (hitoriCell.RightCell.HasValue)
+                        {
+                            BlackSquaresInRowTechnique(hitoriCell.RightCell.Value);
+                        }
+                        if (hitoriCell.UpCell.HasValue)
+                        {
+                            BlackSquaresInColumnTechnique(hitoriCell.UpCell.Value);
+                        }
+                        if (hitoriCell.DownCell.HasValue)
+                        {
+                            BlackSquaresInColumnTechnique(hitoriCell.DownCell.Value);
+                        }
+                    }
+                }
+            }
+
+            void BlackSquaresInRowTechnique(HitoriCell hitoriCell)
+            {
+                int occurances = CountOccuranceOfNumber(GetRow(hitoriCell.Row), hitoriCell.Number);
+                if (occurances > 1)
+                {
+                    GetOccurancesOfNumberInRow(hitoriCell.Row, hitoriCell.Number)
+                        .ForEach(item => item.Column != hitoriCell.Column, SetColorKeyToBlackIfNotWhite);
+                }
+            }
+
+            void BlackSquaresInColumnTechnique(HitoriCell hitoriCell)
+            {
+                int occurances = CountOccuranceOfNumber(GetColumn(hitoriCell.Column), hitoriCell.Number);
+                if (occurances > 1)
+                {
+                    GetOccurancesOfNumberInColumn(hitoriCell.Column, hitoriCell.Number)
+                        .ForEach(item => item.Row != hitoriCell.Row, SetColorKeyToBlackIfNotWhite);
+                }
+            }
+
+            void SetColorKeyToBlackIfNotWhite(HitoriCell hitoriCell)
+            {
+                if (hitoriCell.ColorKey != HitoriMoveColorKey.Black && hitoriCell.ColorKey != HitoriMoveColorKey.White)
+                    ExecuteMoveAndAddToMovesList(hitoriCell.Row, hitoriCell.Column, HitoriMoveColorKey.Black);
+            }
+        }
         #endregion Techniques
-        
+
+        /// <summary>
+        /// Marks all remaining unique numbers in the Hitori puzzle White. 
+        /// A unique number being unique in Row and Column.
+        /// </summary>
+        private void MarkAllRemainingUniqueSquares()
+        {
+            for (int row = 0; row < Puzzle.Size; row++)
+            {
+                for (int column = 0; column < Puzzle.Size; column++)
+                {
+                    int number = Puzzle[row, column];
+                    int x = CountOccuranceOfNumber(GetRow(row), number);
+                    int y = CountOccuranceOfNumber(GetColumn(column), number);
+                    if (x + y == 2 && Puzzle.GetColorKey(row, column) != HitoriMoveColorKey.White)
+                    {
+                        Console.WriteLine($"Row: {row} Column: {column}");
+                        ExecuteMoveAndAddToMovesList(row, column, HitoriMoveColorKey.White);
+                    }
+                }
+            }
+        }
 
         public bool SolveV2()
         {
@@ -169,11 +271,15 @@ namespace Pazuru.Hitori
 
             // 2.0 Basic techniques
             // 2.1 Shading squares in rows and columns
+            SearchForBlackSquaresInRowsAndColumns();
             // 2.2 Un-shading around shaded squares
+            // Is a rule
             // 2.3 Un-shading squares to avoid partitions
+            // Is a rule
 
             // 3.0 Corner techniques
             // 3.1 Corner technique 1
+
             // 3.2 Corner technique 2
 
             // 4.0 Advanced techniques
@@ -185,19 +291,21 @@ namespace Pazuru.Hitori
 
             // 5.0 Remainder of squares
             // 5.1 Mark all remaining unique numbers White
+            //MarkAllRemainingUniqueSquares();
             // 5.2 BFS against puzzle rules for the remaining squares?
 
             return true;
         }
 
+        #region Old
         public override bool Solve()
         {
+            return SolveV2();/*
             //1. In the current state, check if every square is either “W” or “B”. If so, we
             //   have solved the puzzle. Success!
             IsSolved = IsAlreadySolved() || RecursiveSolve();
-            return IsSolved;
+            return IsSolved;*/
         }
-
         private bool RecursiveSolve(HitoriMoveColorKey strategyColorKey = HitoriMoveColorKey.White)
         {
             while (true)
@@ -266,7 +374,6 @@ namespace Pazuru.Hitori
                 //   to solve the board from this state.
             }
         }
-
         private bool TryFindCell(out int row, out int column, HitoriMoveColorKey colorKey)
         {
             for (int i = 0; i < Puzzle.Size; i++)
@@ -297,5 +404,6 @@ namespace Pazuru.Hitori
             }
             return true;
         }
+        #endregion Old
     }
 }

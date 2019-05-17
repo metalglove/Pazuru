@@ -1,38 +1,69 @@
 ﻿namespace Pazuru.Hitori
 {
-    public readonly ref struct HitoriCell
+    public readonly ref struct ExtendedHitoriCell
     {
-        private readonly HitoriMoveColorKey? _up;
-        private readonly HitoriMoveColorKey? _down;
-        private readonly HitoriMoveColorKey? _right;
-        private readonly HitoriMoveColorKey? _left;
-        public HitoriMoveColorKey ColorKey { get; }
-        public int Number { get; }
+        private readonly HitoriCell _cell;
+        public HitoriCell? UpCell { get; }
+        public HitoriCell? DownCell { get; }
+        public HitoriCell? LeftCell { get; }
+        public HitoriCell? RightCell { get; }
+        public HitoriMoveColorKey ColorKey => (HitoriMoveColorKey)_cell.ColorKey;
+        public int Number => _cell.Number;
+        public int Row => _cell.Row;
+        public int Column => _cell.Column;
 
-        public HitoriCell(HitoriPuzzle hitoriPuzzle, int currentRow, int currentColumn)
+        public ExtendedHitoriCell(HitoriPuzzle hitoriPuzzle, int currentRow, int currentColumn)
         {
-            Number = hitoriPuzzle[currentRow, currentColumn];
-            ColorKey = hitoriPuzzle.GetColorKey(currentRow, currentColumn);
-            _up = currentRow > 0
-                ? (HitoriMoveColorKey?)hitoriPuzzle.GetColorKey(currentRow - 1, currentColumn)
+            _cell = new HitoriCell(hitoriPuzzle, currentRow, currentColumn);
+            UpCell = currentRow > 0
+                ? (HitoriCell?)new HitoriCell(hitoriPuzzle, currentRow - 1, currentColumn)
                 : null;
-            _down = currentRow < hitoriPuzzle.Size - 1
-                ? (HitoriMoveColorKey?)hitoriPuzzle.GetColorKey(currentRow + 1, currentColumn)
+            DownCell = currentRow < hitoriPuzzle.Size - 1
+                ? (HitoriCell?)new HitoriCell(hitoriPuzzle, currentRow + 1, currentColumn)
                 : null;
-            _left = currentColumn > 0
-                ? (HitoriMoveColorKey?)hitoriPuzzle.GetColorKey(currentRow, currentColumn - 1)
+            LeftCell = currentColumn > 0 
+                ? (HitoriCell?)new HitoriCell(hitoriPuzzle, currentRow, currentColumn - 1)
                 : null;
-            _right = currentColumn < hitoriPuzzle.Size - 1
-                ? (HitoriMoveColorKey?)hitoriPuzzle.GetColorKey(currentRow, currentColumn + 1)
+            RightCell = currentColumn < hitoriPuzzle.Size - 1
+                ? (HitoriCell?)new HitoriCell(hitoriPuzzle, currentRow, currentColumn + 1)
                 : null;
         }
 
         public bool IsConnectedByEitherHorizontalOrVertical(HitoriMoveColorKey colorKey)
         {
-            return _up == colorKey ||
-                   _down == colorKey ||
-                   _left == colorKey ||
-                   _right == colorKey;
+            return UpCell?.ColorKey == colorKey ||
+                   DownCell?.ColorKey == colorKey ||
+                   LeftCell?.ColorKey == colorKey ||
+                   RightCell?.ColorKey == colorKey;
+        }
+    }
+
+    public readonly struct HitoriCell
+    {
+        private readonly Cell _cell;
+        public int Number => _cell.Number;
+        public int Row => _cell.Row;
+        public int Column => _cell.Column;
+        public HitoriMoveColorKey ColorKey { get; }
+
+        public HitoriCell(HitoriPuzzle hitoriPuzzle, int row, int column)
+        {
+            _cell = new Cell(hitoriPuzzle[row, column], row, column);
+            ColorKey = hitoriPuzzle.GetColorKey(row, column);
+        }
+    }
+
+    public readonly struct Cell
+    {
+        public int Number { get; }
+        public int Row { get; }
+        public int Column { get; }
+
+        public Cell(int number, int row, int column)
+        {
+            Number = number;
+            Row = row;
+            Column = column;
         }
     }
 }
