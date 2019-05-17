@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace Pazuru.Presentation.Web
+namespace Pazuru.Presentation.Web.BackEnd
 {
     public class Program
     {
