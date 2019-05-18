@@ -49,7 +49,8 @@ input {
   border: 0px;
   text-align: center;
 }
-input::-webkit-inner-spin-button, input::-webkit-outer-spin-button {
+input::-webkit-inner-spin-button, 
+input::-webkit-outer-spin-button {
   -webkit-appearance: none; 
   margin: 0; 
 }

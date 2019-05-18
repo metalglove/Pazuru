@@ -14,6 +14,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import { SudokuViewModel, Cell } from '@/viewmodels/SudokuViewModel';
 import SudokuCell from './SudokuCell.vue';
+import { ISudokuPuzzleSevice } from '../../../services/ISudokuPuzzleService';
 
 @Component({
     components: {
@@ -22,6 +23,7 @@ import SudokuCell from './SudokuCell.vue';
 })
 export default class Sudoku extends Vue {
     @Prop() private sudokuViewModel!: SudokuViewModel;
+    private sudokuPuzzleService!: ISudokuPuzzleSevice;
 
     private getSudokuCell(row: number, column: number): Cell {
         const index: number = this.getIndex(row, column);

@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Pazuru.Mapping;
+using System.Net.WebSockets;
+using System.Text;
+using System.Threading;
 
 namespace Pazuru.Presentation.Web.BackEnd
 {
@@ -22,7 +25,26 @@ namespace Pazuru.Presentation.Web.BackEnd
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseWebSockets();
 
+            app.Use(async (http, next) =>
+            {
+                if (http.WebSockets.IsWebSocketRequest)
+                {
+                    WebSocket webSocket = await http.WebSockets.AcceptWebSocketAsync();
+                    if (webSocket != null && webSocket.State == WebSocketState.Open)
+                    {
+                        // TODO: Handle the socket here.
+                        byte[] buffer = Encoding.Default.GetBytes("HELLLOOOOOOOOOO");
+                        await webSocket.SendAsync(buffer, WebSocketMessageType.Binary, true, CancellationToken.None);
+                    }
+                }
+                else
+                {
+                    // If not a websocket request pass down to normal mvc stuff  
+                    await next();
+                }
+            });
             app.Run(async (context) =>
             {
                 await context.Response.WriteAsync("Hello World!");

@@ -1,5 +1,11 @@
 # client
+if `npm run serve` errors with 
+```
+options.clientLogLevel should be {String} and equal to one of the allowed values
 
+ [ 'info', 'warn', 'error', 'debug', 'trace', 'silent' ]
+```
+in `\node_modules\@vue\cli-service\lib\commands\serve.js` change clientLogLevel to info instead of none.
 ## Project setup
 ```
 npm install

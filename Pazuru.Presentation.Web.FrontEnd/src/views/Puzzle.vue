@@ -1,6 +1,7 @@
-<template >
+<template>
     <Sudoku v-if="puzzleViewModel.name === 'Sudoku'" 
-            v-bind:sudokuViewModel="sudokuViewModel"/>
+            v-bind:sudokuViewModel="createSudokuViewModel()"
+            v-bind:sudokuPuzzleService="createSudokuPuzzleService()"/>
     <Hitori v-else-if="puzzleViewModel.name === 'Hitori'"/>
     <EmptyPuzzle v-else />
 </template>
@@ -12,6 +13,9 @@ import Hitori from '@/components/puzzles/Hitori/Hitori.vue';
 import EmptyPuzzle from '@/components/puzzles/EmptyPuzzle.vue';
 import { PuzzleViewModel } from '@/viewmodels/PuzzleViewModel';
 import { SudokuViewModel, Cell } from '../viewmodels/SudokuViewModel';
+import { ISudokuPuzzleSevice } from '../services/ISudokuPuzzleService';
+import { SudokuPuzzleService } from '../services/SudokuPuzzleService';
+import { ICommunicatorService } from '../services/ICommunicatorService';
 
 @Component({
     components: {
@@ -22,11 +26,17 @@ import { SudokuViewModel, Cell } from '../viewmodels/SudokuViewModel';
 })
 export default class PuzzleView extends Vue {
     private puzzleViewModel: PuzzleViewModel = { name: 'Sudoku', puzzleState: [] };
-    private sudokuViewModel: SudokuViewModel = this.loadSudokuViewModel();
+    private communicatorService!: ICommunicatorService;
 
-    private loadSudokuViewModel(): SudokuViewModel {
+    //#region Sudoku
+    private createSudokuPuzzleService(): ISudokuPuzzleSevice {
+        const sudokuPuzzleService: ISudokuPuzzleSevice = new SudokuPuzzleService(this.communicatorService);
+        return sudokuPuzzleService;
+    }
+    private createSudokuViewModel(): SudokuViewModel {
         return { puzzleState: this.createPuzzleState(), moves: [], puzzleLength: 9 };
     }
+    //#endregion
     private createPuzzleState(): Cell[] {
         const cells: Cell[] = [];
         for (let i = 0; i < 9; i++) {
@@ -35,22 +45,14 @@ export default class PuzzleView extends Vue {
                 cells.push(cell);
             }
         }
-        // console.log(cells);
         return cells;
     }
     private getCell(row: number, column: number): Cell {
-        const irow: number = row;
-        const icolumn: number = column;
         const puzzleStateString: string =
         '0340070080800650000003000702000007007100' +
         '40096005000001050002000000170060600900430';
-        const sudokuNumber: number = +puzzleStateString.charAt(irow * icolumn);
-        return {
-            row: irow,
-            column: icolumn,
-            number: sudokuNumber,
-            editable: sudokuNumber === 0
-        };
+        const sudokuNumber: number = +puzzleStateString.charAt(row * 9 + column);
+        return { row, column, number: sudokuNumber, editable: sudokuNumber === 0 };
     }
 }
 </script>
