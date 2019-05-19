@@ -1,4 +1,3 @@
 export interface PuzzleViewModel {
-    name: string;
-    puzzleState: any[];
+    selectedPuzzle: string;
 }

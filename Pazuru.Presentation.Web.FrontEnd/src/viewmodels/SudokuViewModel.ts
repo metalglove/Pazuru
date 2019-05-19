@@ -1,9 +1,10 @@
 import { SudokuNumber } from '@/types/SudokuNumber';
+import { SudokuPuzzleState } from '@/models/Sudoku/SudokuPuzzleState';
 
 export interface SudokuViewModel {
     moves: Move[];
-    puzzleState: Cell[];
-    puzzleLength: number;
+    sudokuPuzzleStateIsGenerated: boolean;
+    sudokuPuzzleState: SudokuPuzzleState | undefined;
 }
 export interface Move {
     cell: Cell;

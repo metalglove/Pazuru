@@ -57,6 +57,7 @@ namespace Pazuru.Presentation.Web.BackEnd
                     cancellationToken: CancellationToken.None);
 
                 handleMessage(result, buffer);
+                buffer = new byte[1024 * 4];
             }
         }
     }

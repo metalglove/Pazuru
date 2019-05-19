@@ -1,6 +1,6 @@
-import { SudokuViewModel } from '@/viewmodels/SudokuViewModel';
+import { SudokuPuzzleState } from '@/models/Sudoku/SudokuPuzzleState';
 
 export interface ISudokuPuzzleSevice {
-    generateSudoku(): SudokuViewModel;
-    solveSudoku(sudokuViewModel: SudokuViewModel): void;
+    generateSudoku(): void;
+    solveSudoku(): void;
 }

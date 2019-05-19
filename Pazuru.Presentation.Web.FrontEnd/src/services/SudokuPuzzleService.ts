@@ -1,27 +1,34 @@
 import { ISudokuPuzzleSevice } from './ISudokuPuzzleService';
-import { ICommunicatorService } from './ICommunicatorService';
-import { SudokuViewModel } from '@/viewmodels/SudokuViewModel';
+import { ICommunicatorService, EventHandler, EventHandlerDestructor } from './ICommunicatorService';
 import { SudokuStateChangeEventHandler } from '@/eventhandlers/SudokuStateChangeEventHandler';
-import { SudokuPuzzleState } from '@/models/Sudoku/SudokuPuzzleState';
+import { GenerateSudokuPuzzleEventHandler } from '@/eventhandlers/GenerateSudokuPuzzleEventHandler';
+import { RootState } from '@/store/RootState';
 
 export class SudokuPuzzleService implements ISudokuPuzzleSevice {
-    private communicatorService!: ICommunicatorService;
-    private sudokuStateHandler: SudokuStateChangeEventHandler | undefined;
+  private communicatorService!: ICommunicatorService;
+  private state!: RootState;
 
-    constructor(communicatorService: ICommunicatorService) {
-        this.communicatorService = communicatorService;
-    }
+  constructor(communicatorService: ICommunicatorService, state: RootState) {
+    this.communicatorService = communicatorService;
+    this.state = state;
+  }
 
-    public generateSudoku(): SudokuViewModel {
-        throw new Error('Method not implemented.');
-    }
+  public generateSudoku(): void {
+    const sudokuGeneratePuzzleRequest: GenerateSudokuPuzzleEventHandler =
+      new GenerateSudokuPuzzleEventHandler(this.getEventHandlerDestructor(), this.state.sudokuViewModel);
+    this.communicatorService.addEventHandler(sudokuGeneratePuzzleRequest);
+    this.communicatorService.emit('sudokuGeneratePuzzleRequest', undefined);
+  }
 
-    public solveSudoku(sudokuViewModel: SudokuViewModel): void {
-        if (this.sudokuStateHandler === undefined) {
-            this.sudokuStateHandler = new SudokuStateChangeEventHandler(sudokuViewModel);
-            this.communicatorService.addEventHandler(this.sudokuStateHandler);
-            const puzzleState: string = sudokuViewModel.puzzleState.map(xd => xd.number).join('');
-            this.communicatorService.emit('sudokuSolveRequest', new SudokuPuzzleState(puzzleState));
-        }
-    }
+  public solveSudoku(): void {
+    const sudokuPuzzleState = (this.state.sudokuViewModel.sudokuPuzzleState!);
+    const sudokuStateHandler: SudokuStateChangeEventHandler =
+      new SudokuStateChangeEventHandler(this.getEventHandlerDestructor(), sudokuPuzzleState);
+    this.communicatorService.addEventHandler(sudokuStateHandler);
+    this.communicatorService.emit('sudokuSolvePuzzleRequest', { asString: sudokuPuzzleState.asString });
+  }
+
+  private getEventHandlerDestructor(): EventHandlerDestructor {
+    return (eventHandler: EventHandler) => this.communicatorService.removeEventHandler(eventHandler);
+  }
 }

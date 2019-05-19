@@ -1,27 +1,29 @@
-import { EventCallBack, EventHandler } from '@/services/ICommunicatorService';
-import { SudokuViewModel, Cell } from '@/viewmodels/SudokuViewModel';
+import { EventCallBack, EventHandler, EventHandlerDestructor } from '@/services/ICommunicatorService';
+import { Cell } from '@/viewmodels/SudokuViewModel';
 import { SudokuStateChangeEvent } from './SudokuStateChangeEvent';
+import { SudokuPuzzleState } from '@/models/Sudoku/SudokuPuzzleState';
 
 export class SudokuStateChangeEventHandler extends EventHandler {
-    public callback!: EventCallBack;
-    private sudokuViewModel!: SudokuViewModel;
+  public callback!: EventCallBack;
+  private sudokuPuzzleState!: SudokuPuzzleState;
+  private eventHandlerDestructor!: EventHandlerDestructor;
 
-    constructor(sudokuViewModel: SudokuViewModel) {
-        super('sudokuPuzzleStateChange');
-        this.sudokuViewModel = sudokuViewModel;
-        this.callback = (data: any) => this.updateSudokuState(data);
-    }
+  constructor(eventHandlerDestructor: EventHandlerDestructor, sudokuPuzzleState: SudokuPuzzleState) {
+    super('sudokuPuzzleStateChange');
+    this.sudokuPuzzleState = sudokuPuzzleState;
+    this.eventHandlerDestructor = eventHandlerDestructor;
+    this.callback = (data: any) => this.updateSudokuState(data);
+  }
 
-    private updateSudokuState(data: SudokuStateChangeEvent): void {
-        console.log(data);
-        if (data.changed) {
-            const cell: Cell = this.sudokuViewModel.puzzleState[data.index];
-            if (cell.number === data.numberBefore) {
-                console.log('i changed');
-                cell.number = data.numberAfter;
-            } else {
-                console.log('i DID NOT change');
-            }
-        }
+  private updateSudokuState(data: SudokuStateChangeEvent): void {
+    if (data.changed) {
+      const cell: Cell = this.sudokuPuzzleState.cells[data.index];
+      if (cell.number === data.numberBefore) {
+        cell.number = data.numberAfter;
+      }
     }
+    if (data.lastEvent) {
+      this.eventHandlerDestructor(this);
+    }
+  }
 }

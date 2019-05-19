@@ -1,11 +1,20 @@
 <template>
-    <div id="puzzleElement">
-        <Sudoku v-if="puzzleViewModel.name === 'Sudoku'"
-                v-bind:sudokuViewModel="createSudokuViewModel()"
-                v-bind:sudokuPuzzleService="createSudokuPuzzleService()"/>
-        <Hitori v-else-if="puzzleViewModel.name === 'Hitori'"/>
-        <EmptyPuzzle v-else />
+  <div class="wrapper">
+    <div class="left">
+      <Sudoku v-if="puzzleViewModel.selectedPuzzle === 'Sudoku'"/>
+      <Hitori v-else-if="puzzleViewModel.selectedPuzzle === 'Hitori'"/>
+      <EmptyPuzzle v-else-if="puzzleViewModel.selectedPuzzle === 'None'"/>
+      <p v-else>Something happened</p>
     </div>
+    <div class="right">
+      <h1>Select a puzzle:</h1>
+      <select v-model="puzzleViewModel.selectedPuzzle">
+        <option v-for="puzzle in puzzles" v-bind:value="puzzle" v-bind:key="puzzle">{{ puzzle }}</option>
+      </select>
+      <button @click="solve()">Solve</button>
+      <button @click="generate()">Generate</button>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -19,44 +28,91 @@ import { ISudokuPuzzleSevice } from '../services/ISudokuPuzzleService';
 import { SudokuPuzzleService } from '../services/SudokuPuzzleService';
 import { ICommunicatorService } from '../services/ICommunicatorService';
 import { SudokuNumber } from '../types/SudokuNumber';
+import { SudokuPuzzleState } from '../models/Sudoku/SudokuPuzzleState';
+import { mapGetters, mapState, Store } from 'vuex';
+import { RootState } from '@/store/RootState';
 
 @Component({
-    components: {
-        Sudoku,
-        Hitori,
-        EmptyPuzzle
-    }
+  components: {
+    Sudoku,
+    Hitori,
+    EmptyPuzzle
+  },
+  computed: {
+    ...mapState(['puzzleViewModel', 'puzzles'])
+  }
 })
 export default class PuzzleView extends Vue {
-    private puzzleViewModel: PuzzleViewModel = { name: 'Sudoku', puzzleState: [] };
-    @Prop() private communicatorService!: ICommunicatorService;
+  @Prop() private communicatorService!: ICommunicatorService;
+  @Prop() private sudokuPuzzleService!: ISudokuPuzzleSevice;
 
-    //#region Sudoku
-    private createSudokuPuzzleService(): ISudokuPuzzleSevice {
-        const sudokuPuzzleService: ISudokuPuzzleSevice = new SudokuPuzzleService(this.communicatorService);
-        return sudokuPuzzleService;
-    }
-    private createSudokuViewModel(): SudokuViewModel {
-        return { puzzleState: this.createPuzzleState(), moves: [], puzzleLength: 9 };
-    }
-    //#endregion
-
-    private createPuzzleState(): Cell[] {
-        const cells: Cell[] = [];
-        for (let i = 0; i < 9; i++) {
-            for (let j = 0; j < 9; j++) {
-                const cell = this.getCell(i, j);
-                cells.push(cell);
-            }
+  // TODO: create a select for selecting a puzzle, on selected will show Sudoku component
+  // TODO: generate button will set the puzzle state
+  // TODO: solve button will solve the puzzle
+  private solve(): void {
+    const state: RootState = (this.$store as Store<RootState>).state;
+    switch (this.getSelectedPuzzleName()) {
+      case 'Sudoku': {
+        if (!state.sudokuViewModel.sudokuPuzzleStateIsGenerated) {
+          // TODO: show message that the sudoku puzzle needs to be generated first before it can be solved.
+          return;
         }
-        return cells;
+        this.sudokuPuzzleService.solveSudoku();
+        console.log('Sudoku solve called');
+        break;
+      }
+      case 'Hitori': {
+        // TODO: show message now implemented
+        console.log('Hitori solve called');
+        break;
+      }
+      case 'None': {
+        // TODO: show message to select a puzzle first
+        console.log('None solve called');
+        break;
+      }
     }
-    private getCell(row: number, column: number): Cell {
-        const puzzleStateString: string =
-        '0340070080800650000003000702000007007100' +
-        '40096005000001050002000000170060600900430';
-        const sudokuNumber: SudokuNumber = (+puzzleStateString.charAt(row * 9 + column)) as SudokuNumber;
-        return { row, column, number: sudokuNumber, editable: sudokuNumber === 0 };
+  }
+
+  private generate(): void {
+    switch (this.getSelectedPuzzleName()) {
+      case 'Sudoku':
+        this.sudokuPuzzleService.generateSudoku();
+        console.log('Sudoku generate called');
+        break;
+      case 'Hitori': {
+        // TODO: show message now implemented
+        console.log('Hitori generate called');
+        break;
+      }
+      case 'None': {
+        // TODO: show message to select a puzzle first
+        console.log('None generate called');
+        break;
+      }
     }
+  }
+
+  private getSelectedPuzzleName(): string {
+    const state: RootState = (this.$store as Store<RootState>).state;
+    return state.puzzleViewModel.selectedPuzzle;
+  }
 }
 </script>
+
+<style scoped>
+.wrapper {
+  width: 60%;
+  margin: 0 auto;
+}
+.left {
+  float: left;
+  width: 75%;
+  background-color: gray;
+}
+.right {
+  float: left;
+  width: 25%;
+  background-color: lightblue;
+}
+</style>

@@ -5,4 +5,5 @@ export interface SudokuStateChangeEvent {
     numberAfter: SudokuNumber;
     numberBefore: SudokuNumber;
     changed: boolean;
+    lastEvent: boolean;
 }

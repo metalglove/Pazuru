@@ -1,7 +1,11 @@
-export class SudokuPuzzleState {
-    public puzzleState!: string;
+import { Cell } from '@/viewmodels/SudokuViewModel';
 
-    constructor(puzzleState: string) {
-        this.puzzleState = puzzleState;
-    }
+export class SudokuPuzzleState {
+  public asString!: string;
+  public cells!: Cell[];
+
+  constructor(sudokuPuzzleStateString: string, cells: Cell[]) {
+    this.asString = sudokuPuzzleStateString;
+    this.cells = cells;
+  }
 }
