@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pazuru.Infrastructure", "Pa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pazuru.Presentation.CLI", "Pazuru.Presentation.CLI\Pazuru.Presentation.CLI.csproj", "{A0A6A4BC-FA4B-4A59-ADD0-B2F1A163C0DB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pazuru.Infrastructure.Networking", "Pazuru.Infrastructure.Networking\Pazuru.Infrastructure.Networking.csproj", "{454BAC88-5D1B-44A2-B59C-B09FF570D911}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pazuru.Sudoku", "Pazuru.Sudoku\Pazuru.Sudoku.csproj", "{77CE56BA-7AFA-4219-BCEE-503438EAD2BC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pazuru.Mapping", "Pazuru.Mapping\Pazuru.Mapping.csproj", "{7C49A5D2-ED0F-4E01-A714-8B0575DD3D3E}"
@@ -41,10 +39,6 @@ Global
 		{A0A6A4BC-FA4B-4A59-ADD0-B2F1A163C0DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0A6A4BC-FA4B-4A59-ADD0-B2F1A163C0DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0A6A4BC-FA4B-4A59-ADD0-B2F1A163C0DB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{454BAC88-5D1B-44A2-B59C-B09FF570D911}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{454BAC88-5D1B-44A2-B59C-B09FF570D911}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{454BAC88-5D1B-44A2-B59C-B09FF570D911}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{454BAC88-5D1B-44A2-B59C-B09FF570D911}.Release|Any CPU.Build.0 = Release|Any CPU
 		{77CE56BA-7AFA-4219-BCEE-503438EAD2BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{77CE56BA-7AFA-4219-BCEE-503438EAD2BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77CE56BA-7AFA-4219-BCEE-503438EAD2BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
