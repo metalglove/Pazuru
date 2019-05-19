@@ -1,3 +1,5 @@
+import { SudokuNumber } from '@/types/SudokuNumber';
+
 export interface SudokuViewModel {
     moves: Move[];
     puzzleState: Cell[];
@@ -11,6 +13,6 @@ export interface Move {
 export interface Cell {
     row: number;
     column: number;
-    number: number;
+    number: SudokuNumber;
     editable: boolean;
 }

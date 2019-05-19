@@ -5,8 +5,8 @@ namespace Pazuru.Domain
 {
     public abstract class Puzzle<TPuzzleMove, TPuzzle> : Puzzle where TPuzzle : Puzzle where TPuzzleMove : PuzzleMove<TPuzzle>
     {
-        private readonly List<PuzzleRule<TPuzzleMove, TPuzzle>> puzzleRules = new List<PuzzleRule<TPuzzleMove, TPuzzle>>();
-        public IReadOnlyCollection<PuzzleRule<TPuzzleMove, TPuzzle>> PuzzleRules => puzzleRules;
+        private readonly List<PuzzleRule<TPuzzleMove, TPuzzle>> _puzzleRules = new List<PuzzleRule<TPuzzleMove, TPuzzle>>();
+        public IReadOnlyCollection<PuzzleRule<TPuzzleMove, TPuzzle>> PuzzleRules => _puzzleRules;
 
         protected Puzzle(PuzzleState puzzleState) : base(puzzleState)
         {
@@ -15,13 +15,13 @@ namespace Pazuru.Domain
 
         protected void AddRule(PuzzleRule<TPuzzleMove, TPuzzle> puzzleRule) 
         {
-            puzzleRules.Add(puzzleRule);
+            _puzzleRules.Add(puzzleRule);
         }
         public abstract bool ExecuteMove(TPuzzleMove puzzleMove);
         public abstract bool UndoMove(TPuzzleMove puzzleMove);
         public override void Dispose()
         {
-            puzzleRules.Clear();
+            _puzzleRules.Clear();
         }
     }
 

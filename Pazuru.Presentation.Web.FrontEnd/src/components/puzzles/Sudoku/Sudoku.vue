@@ -1,14 +1,17 @@
 <template>
+  <div>
     <table class="sudoku-table">
-        <tbody>
-          <tr v-for="(row) in sudokuViewModel.puzzleLength" 
-              v-bind:key="row">
-            <SudokuCell v-for="(column) in sudokuViewModel.puzzleLength"
-                        v-bind:key="getIndex(row, column)" 
-                        v-bind:sudokuCell="getSudokuCell(row, column)" />
-          </tr>
-        </tbody>
-      </table>
+          <tbody>
+            <tr v-for="(row) in sudokuViewModel.puzzleLength" 
+                v-bind:key="row">
+              <SudokuCell v-for="(column) in sudokuViewModel.puzzleLength"
+                          v-bind:key="getIndex(row, column)" 
+                          v-bind:sudokuCell="getSudokuCell(row, column)" />
+            </tr>
+          </tbody>
+        </table>
+    <button @click="solveSudoku()">Solve</button>
+  </div>
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
@@ -22,18 +25,23 @@ import { ISudokuPuzzleSevice } from '../../../services/ISudokuPuzzleService';
     }
 })
 export default class Sudoku extends Vue {
-    @Prop() private sudokuViewModel!: SudokuViewModel;
-    private sudokuPuzzleService!: ISudokuPuzzleSevice;
+  @Prop() private sudokuViewModel!: SudokuViewModel;
+  @Prop() private sudokuPuzzleService!: ISudokuPuzzleSevice;
 
-    private getSudokuCell(row: number, column: number): Cell {
-        const index: number = this.getIndex(row, column);
-        const cell: Cell = this.sudokuViewModel.puzzleState[index];
-        return cell;
-    }
+  public solveSudoku(): void {
+    console.log('solveSudoku', this.sudokuPuzzleService);
+    this.sudokuPuzzleService.solveSudoku(this.sudokuViewModel);
+  }
 
-    private getIndex(row: number, column: number): number {
-      return (row - 1) * this.sudokuViewModel.puzzleLength + (column - 1);
-    }
+  private getSudokuCell(row: number, column: number): Cell {
+    const index: number = this.getIndex(row, column);
+    const cell: Cell = this.sudokuViewModel.puzzleState[index];
+    return cell;
+  }
+
+  private getIndex(row: number, column: number): number {
+    return (row - 1) * this.sudokuViewModel.puzzleLength + (column - 1);
+  }
 }
 </script>
 

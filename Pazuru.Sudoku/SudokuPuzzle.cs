@@ -1,6 +1,5 @@
 ﻿using Pazuru.Domain;
 using Pazuru.Sudoku.Rules;
-using System;
 
 namespace Pazuru.Sudoku
 {
@@ -18,7 +17,6 @@ namespace Pazuru.Sudoku
             AddRule(new IsNumberUniqueIn3By3BoxSudokuRule(this));
         }
 
- 
         public override bool ExecuteMove(SudokuMove sudokuMove)
         {
             if (!sudokuMove.IsValid)

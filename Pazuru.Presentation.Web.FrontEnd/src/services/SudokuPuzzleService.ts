@@ -1,10 +1,12 @@
 import { ISudokuPuzzleSevice } from './ISudokuPuzzleService';
 import { ICommunicatorService } from './ICommunicatorService';
 import { SudokuViewModel } from '@/viewmodels/SudokuViewModel';
+import { SudokuStateChangeEventHandler } from '@/eventhandlers/SudokuStateChangeEventHandler';
+import { SudokuPuzzleState } from '@/models/Sudoku/SudokuPuzzleState';
 
 export class SudokuPuzzleService implements ISudokuPuzzleSevice {
     private communicatorService!: ICommunicatorService;
-    // private sudokuStateListener: SudokuStateListener | undefined;
+    private sudokuStateHandler: SudokuStateChangeEventHandler | undefined;
 
     constructor(communicatorService: ICommunicatorService) {
         this.communicatorService = communicatorService;
@@ -15,8 +17,11 @@ export class SudokuPuzzleService implements ISudokuPuzzleSevice {
     }
 
     public solveSudoku(sudokuViewModel: SudokuViewModel): void {
-        // if (this.sudokuStateListener == undefined) {
-        //     this.sudokuStateListener = new SudokuStateListener(this, 'sudokuState')
-        // }
+        if (this.sudokuStateHandler === undefined) {
+            this.sudokuStateHandler = new SudokuStateChangeEventHandler(sudokuViewModel);
+            this.communicatorService.addEventHandler(this.sudokuStateHandler);
+            const puzzleState: string = sudokuViewModel.puzzleState.map(xd => xd.number).join('');
+            this.communicatorService.emit('sudokuSolveRequest', new SudokuPuzzleState(puzzleState));
+        }
     }
 }

@@ -4,17 +4,13 @@ export interface ICommunicatorService {
     emit(event: string, data: any): void;
 }
 
-export type MessageEventCallback = (data: MessageEvent) => void;
+export type EventCallBack = (data: any) => void;
 
-// interface IEventListener {
-//     (data: any): void;
-// }
-export class EventHandler {
+export abstract class EventHandler {
     public eventName!: string;
-    public callback!: MessageEventCallback;
+    public abstract callback: EventCallBack;
 
-    constructor(eventName: string, callback: MessageEventCallback) {
+    constructor(eventName: string) {
         this.eventName = eventName;
-        this.callback = callback;
     }
 }
