@@ -2,6 +2,9 @@ import { Cell } from '@/viewmodels/SudokuViewModel';
 import { SudokuPuzzleState } from '@/models/Sudoku/SudokuPuzzleState';
 
 export class SudokuUtilities {
+  public static toString(sudokuPuzzlestate: SudokuPuzzleState): string {
+    return sudokuPuzzlestate.cells.map(cell => cell.number).join('');
+  }
   public static getCellAtIndex(sudokuPuzzlestate: SudokuPuzzleState, row: number, column: number): Cell {
     return sudokuPuzzlestate.cells[(row - 1) * 9 + (column - 1)];
   }

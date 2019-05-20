@@ -2,6 +2,7 @@ import { EventCallBack, EventHandler, EventHandlerDestructor } from '@/services/
 import { Cell } from '@/viewmodels/SudokuViewModel';
 import { SudokuStateChangeEvent } from './SudokuStateChangeEvent';
 import { SudokuPuzzleState } from '@/models/Sudoku/SudokuPuzzleState';
+import { SudokuUtilities } from '@/utilities/SudokuUtilities';
 
 export class SudokuStateChangeEventHandler extends EventHandler {
   public callback!: EventCallBack;
@@ -23,6 +24,7 @@ export class SudokuStateChangeEventHandler extends EventHandler {
       }
     }
     if (data.lastEvent) {
+      console.log(SudokuUtilities.toString(this.sudokuPuzzleState));
       this.eventHandlerDestructor(this);
     }
   }

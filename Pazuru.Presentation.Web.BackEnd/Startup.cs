@@ -20,6 +20,7 @@ namespace Pazuru.Presentation.Web.BackEnd
             {
                 app.UseDeveloperExceptionPage();
             }
+
             app.UseWebSockets();
             app.MapWebSocketManager<PuzzleHandler>("/puzzle");
         }
