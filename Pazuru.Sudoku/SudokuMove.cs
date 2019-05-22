@@ -25,8 +25,7 @@ namespace Pazuru.Sudoku
                 return false;
 
             NumberBefore = puzzle[Row, Column];
-            if (!puzzle.ExecuteMove(this))
-                throw new Exception("Failed to execute move");
+            puzzle.ExecuteMove(this);
             return IsValid;
         }
 
@@ -34,8 +33,7 @@ namespace Pazuru.Sudoku
         {
             if (!IsValid)
                 return;
-            if (!puzzle.UndoMove(this))
-                throw new Exception("Failed to undo move");
+            puzzle.UndoMove(this);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Pazuru.Presentation.CLI
         public static async Task Main(string[] args)
         {
             Startup startup = new Startup();
-            await startup.IntializeAsync();
+            await startup.InitializeAsync();
             IGenericServiceProvider serviceProvider = startup.GetServiceProvider();
             IPuzzleService<SudokuPuzzle> puzzleService = serviceProvider.GetService<IPuzzleService<SudokuPuzzle>>();
             SudokuPuzzle puzzle = puzzleService.Generate();

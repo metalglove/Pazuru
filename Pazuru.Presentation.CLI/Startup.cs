@@ -6,11 +6,11 @@ namespace Pazuru.Presentation.CLI
 {
     internal class Startup
     {
-        private IGenericServiceProvider serviceProvider;
+        private IGenericServiceProvider _serviceProvider;
 
-        internal Task IntializeAsync()
+        internal Task InitializeAsync()
         {
-            serviceProvider = new ServiceCollection()
+            _serviceProvider = new ServiceCollection()
                 .AddApplicationServices()
                 .BuildServiceProvider()
                 .ToGenericServiceProvider();
@@ -20,7 +20,7 @@ namespace Pazuru.Presentation.CLI
 
         internal IGenericServiceProvider GetServiceProvider()
         {
-            return serviceProvider;
+            return _serviceProvider;
         }
     }
 }

@@ -14,19 +14,19 @@ namespace Pazuru.Sudoku
             int length = puzzle.Length;
             int decider = width * deciderWidth * 2;
             int newDecider = (decider - 6) / 2;
-            stringBuilder.Append($"{CellVerticalLine.ToString().PadRight(newDecider, ' ')}Sudoku{"".PadRight(newDecider, ' ')}");
-            stringBuilder.Append($"{CellVerticalLine}");
+            stringBuilder.Append($"{VerticalLine.ToString().PadRight(newDecider, ' ')}Sudoku{"".PadRight(newDecider, ' ')}");
+            stringBuilder.Append($"{VerticalLine}");
             stringBuilder.AppendLine();
-            string splitter = CellVerticalJointLeft.ToString().PadRight(stringBuilder.Length - 3, CellHorizontalLine);
-            stringBuilder.Append(CellVerticalJointLeft);
+            string splitter = VerticalJointLeft.ToString().PadRight(stringBuilder.Length - 3, HorizontalLine);
+            stringBuilder.Append(VerticalJointLeft);
             for (int j = 0; j < width; j++)
             {
-                stringBuilder.Append($"{CellHorizontalLine}".PadRight(deciderWidth * 2 - 1, CellHorizontalLine) + CellHorizontalJointTop);
+                stringBuilder.Append($"{HorizontalLine}".PadRight(deciderWidth * 2 - 1, HorizontalLine) + HorizontalJointTop);
             }
-            stringBuilder.Insert(0, splitter + CellRightTop + Environment.NewLine);
+            stringBuilder.Insert(0, splitter + RightTop + Environment.NewLine);
             stringBuilder.Remove(0, 1);
-            stringBuilder.Insert(0, CellLeftTop);
-            stringBuilder.Replace(CellHorizontalJointTop, CellVerticalJointRight, stringBuilder.Length - 1, 1);
+            stringBuilder.Insert(0, LeftTop);
+            stringBuilder.Replace(HorizontalJointTop, VerticalJointRight, stringBuilder.Length - 1, 1);
             stringBuilder.AppendLine();
 
             for (int x = 0; x < length; x++)
@@ -35,30 +35,30 @@ namespace Pazuru.Sudoku
                 for (; y < width; y++)
                 {
                     stringBuilder.Append(puzzle[x, y] == default
-                        ? $"{CellVerticalLine}".PadRight(deciderWidth * 2, ' ')
-                        : $"{CellVerticalLine}".PadRight(deciderWidth, ' ') +
+                        ? $"{VerticalLine}".PadRight(deciderWidth * 2, ' ')
+                        : $"{VerticalLine}".PadRight(deciderWidth, ' ') +
                           $"{puzzle[x, y]}".PadRight(deciderWidth, ' '));
                 }
                 if (x >= length - 1 && y >= width - 1)
                 {
-                    stringBuilder.AppendLine(CellVerticalLine.ToString());
+                    stringBuilder.AppendLine(VerticalLine.ToString());
                     continue;
                 }
-                stringBuilder.AppendLine(CellVerticalLine.ToString());
-                stringBuilder.Append($"{CellVerticalJointLeft}".PadRight(deciderWidth * 2, CellHorizontalLine));
+                stringBuilder.AppendLine(VerticalLine.ToString());
+                stringBuilder.Append($"{VerticalJointLeft}".PadRight(deciderWidth * 2, HorizontalLine));
                 for (int j = 1; j < width; j++)
                 {
-                    stringBuilder.Append($"{CellTJoint}".PadRight(deciderWidth * 2, CellHorizontalLine));
+                    stringBuilder.Append($"{Joint}".PadRight(deciderWidth * 2, HorizontalLine));
                 }
-                stringBuilder.AppendLine(CellVerticalJointRight.ToString());
+                stringBuilder.AppendLine(VerticalJointRight.ToString());
             }
 
-            stringBuilder.Append(CellLeftBottom);
+            stringBuilder.Append(LeftBottom);
             for (int j = 0; j < width; j++)
             {
-                stringBuilder.Append($"{CellHorizontalLine}".PadRight(deciderWidth * 2 - 1, CellHorizontalLine) + CellHorizontalJointBottom);
+                stringBuilder.Append($"{HorizontalLine}".PadRight(deciderWidth * 2 - 1, HorizontalLine) + HorizontalJointBottom);
             }
-            stringBuilder.Replace(CellHorizontalJointBottom, CellRightBottom, stringBuilder.Length - 1, 1);
+            stringBuilder.Replace(HorizontalJointBottom, RightBottom, stringBuilder.Length - 1, 1);
             stringBuilder.AppendLine();
             return stringBuilder.ToString();
         }
