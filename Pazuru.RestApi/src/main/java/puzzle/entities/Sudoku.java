@@ -1,16 +1,18 @@
-package puzzle;
+package puzzle.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.springframework.hateoas.ResourceSupport;
+
 @Entity
-public class Sudoku {
+public class Sudoku extends ResourceSupport {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	private Long id;
 	private String solvedSudoku;
 	private String originalSudoku;
 
@@ -28,5 +30,13 @@ public class Sudoku {
 
 	public void setSolvedSudoku(String solvedSudoku) {
 		this.solvedSudoku = solvedSudoku;
+	}
+
+	public Long getSudokuId() {
+		return id;
+	}
+
+	public void setSudokuId(Long id) {
+		this.id = id;
 	}
 }

@@ -17,39 +17,40 @@ namespace Pazuru.Sudoku
 
         public override SudokuPuzzle Generate()
         {
-            _puzzle = new byte[81];
-            
-            for (int index = 0; index < Length; index += 3)
-            {
-                // ReSharper disable once SuspiciousTypeConversion.Global
-                List<byte> list = Enumerable.Range(1, 9).Select(a => (byte)a).ToList();
-
-                List<byte> sudokuNumbers = list.Shuffle();
-                _puzzle[GetIndex(index, index)] = TakeAndRemoveFirst(sudokuNumbers);
-                _puzzle[GetIndex(index, index + 1)] = TakeAndRemoveFirst(sudokuNumbers);
-                _puzzle[GetIndex(index, index + 2)] = TakeAndRemoveFirst(sudokuNumbers);
-                _puzzle[GetIndex(index + 1, index)] = TakeAndRemoveFirst(sudokuNumbers);
-                _puzzle[GetIndex(index + 1, index + 1)] = TakeAndRemoveFirst(sudokuNumbers);
-                _puzzle[GetIndex(index + 1, index + 2)] = TakeAndRemoveFirst(sudokuNumbers);
-                _puzzle[GetIndex(index + 2, index)] = TakeAndRemoveFirst(sudokuNumbers);
-                _puzzle[GetIndex(index + 2, index + 1)] = TakeAndRemoveFirst(sudokuNumbers);
-                _puzzle[GetIndex(index + 2, index + 2)] = TakeAndRemoveFirst(sudokuNumbers);
-            }
-
-            RecursiveFill();
-            indexList = Enumerable.Range(0, 80).ToList().Shuffle();
-            RecursiveRemove();
-
-            PuzzleState puzzleState = new PuzzleState(_puzzle);
+            byte[] grid = Encoding.Default.GetBytes("034007008080065000000300070200000700710040096005000001050002000000170060600900430");
+            PuzzleState puzzleState = new PuzzleState(grid);
             SudokuPuzzle sudoku = new SudokuPuzzle(puzzleState);
             return sudoku;
+            //_puzzle = new byte[81];
+            
+            //for (int index = 0; index < Length; index += 3)
+            //{
+            //    // ReSharper disable once SuspiciousTypeConversion.Global
+            //    List<byte> list = Enumerable.Range(1, 9).Select(a => (byte)a).ToList();
 
-            byte TakeAndRemoveFirst(IList<byte> list)
-            {
-                byte num = list[0];
-                list.RemoveAt(0);
-                return num;
-            }
+            //    List<byte> sudokuNumbers = list.Shuffle();
+            //    for (int i = 0; i <= 2; i++)
+            //    {
+            //        _puzzle[GetIndex(index, index + i)] = TakeAndRemoveFirst(sudokuNumbers);
+            //        _puzzle[GetIndex(index + 1, index + i)] = TakeAndRemoveFirst(sudokuNumbers);
+            //        _puzzle[GetIndex(index + 2, index + i)] = TakeAndRemoveFirst(sudokuNumbers);
+            //    }
+            //}
+
+            //RecursiveFill();
+            //indexList = Enumerable.Range(0, 80).ToList().Shuffle();
+            //RecursiveRemove();
+
+            //PuzzleState puzzleState = new PuzzleState(_puzzle);
+            //SudokuPuzzle sudoku = new SudokuPuzzle(puzzleState);
+            //return sudoku;
+
+            //byte TakeAndRemoveFirst(IList<byte> list)
+            //{
+            //    byte num = list[0];
+            //    list.RemoveAt(0);
+            //    return num;
+            //}
         }
 
         private bool RecursiveRemove()
