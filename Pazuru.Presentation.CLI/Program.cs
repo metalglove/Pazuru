@@ -17,44 +17,52 @@ namespace Pazuru.Presentation.CLI
             await startup.InitializeAsync();
             IGenericServiceProvider serviceProvider = startup.GetServiceProvider();
             IPuzzleService<SudokuPuzzle> puzzleService = serviceProvider.GetService<IPuzzleService<SudokuPuzzle>>();
-            SudokuPuzzle puzzle = puzzleService.Generate();
-            string beforePuzzle = puzzleService.Print(puzzle);
-            Console.WriteLine("Sudoku");
-            Console.Write(beforePuzzle);
-            Stopwatch stopwatch = Stopwatch.StartNew();
-            PuzzleSolveDto puzzleSolveDto = puzzleService.Solve(puzzle);
-            stopwatch.Stop();
-
-            if (puzzleSolveDto.Success)
+            //byte[] bs = Encoding.Default.GetBytes(
+            //    "800000000003600000070090200050007000000045700000100030001000068008500010090000400");
+            //PuzzleState ps = new PuzzleState(bs);
+            //SudokuPuzzle s = new SudokuPuzzle(ps);
+            for (int i = 0; i < 1000; i++)
             {
-                Console.WriteLine($"Solved in: {stopwatch.ElapsedMilliseconds}ms");
-                string afterPuzzle = puzzleService.Print(puzzle);
-                Console.WriteLine(afterPuzzle);
-                ConsoleKeyInfo input;
-                do
+                SudokuPuzzle puzzle = puzzleService.Generate();
+                string beforePuzzle = puzzleService.Print(puzzle);
+                Console.WriteLine("Sudoku");
+                Console.Write(beforePuzzle);
+                Stopwatch stopwatch = Stopwatch.StartNew();
+                PuzzleSolveDto puzzleSolveDto = puzzleService.Solve(puzzle);
+                stopwatch.Stop();
+
+                if (puzzleSolveDto.Success)
                 {
-                    Console.Write("\rPrint all puzzle states? [y/n]\n");
-                    input = Console.ReadKey();
-                    if (input.KeyChar == 'y')
-                    {
-                        foreach (PuzzleState state in puzzleSolveDto.PuzzleStates)
-                        {
-                            Console.Write("\n" + state);
-                        }
-                        break;
-                    }
+                    Console.WriteLine($"Solved in: {stopwatch.ElapsedMilliseconds}ms");
+                    string afterPuzzle = puzzleService.Print(puzzle);
+                    Console.WriteLine(afterPuzzle);
+                    //ConsoleKeyInfo input;
+                    //do
+                    //{
+                    //    Console.Write("\rPrint all puzzle states? [y/n]\n");
+                    //    input = Console.ReadKey();
+                    //    if (input.KeyChar == 'y')
+                    //    {
+                    //        foreach (PuzzleState state in puzzleSolveDto.PuzzleStates)
+                    //        {
+                    //            Console.Write("\n" + state);
+                    //        }
+                    //        break;
+                    //    }
 
-                    if (input.KeyChar.Equals('n'))
-                    {
-                        Console.WriteLine();
-                        break;
-                    }
-                } while (!input.KeyChar.Equals('y') || !input.KeyChar.Equals('n'));
+                    //    if (input.KeyChar.Equals('n'))
+                    //    {
+                    //        Console.WriteLine();
+                    //        break;
+                    //    }
+                    //} while (!input.KeyChar.Equals('y') || !input.KeyChar.Equals('n'));
+                }
+                else
+                {
+                    Console.WriteLine("Failed to solve puzzle!");
+                }
             }
-            else
-            {
-                Console.WriteLine("Failed to solve puzzle!");
-            }
+            
             Console.ReadKey();
         }
     }
