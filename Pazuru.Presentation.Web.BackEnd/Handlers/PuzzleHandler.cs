@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,13 +11,18 @@ using Pazuru.Sudoku;
 
 namespace Pazuru.Presentation.Web.BackEnd.Handlers
 {
-    public class PuzzleHandler : WebSocketHandler
+    public sealed class PuzzleHandler : WebSocketHandler
     {
         private readonly IPuzzleService<SudokuPuzzle> _sudokuPuzzleService;
+        private readonly IPuzzleStorageService _puzzleStorageService;
 
-        public PuzzleHandler(WebSocketConnectionManager webSocketConnectionManager, IPuzzleService<SudokuPuzzle> sudokuPuzzleService) : base(webSocketConnectionManager)
+        public PuzzleHandler(
+            WebSocketConnectionManager webSocketConnectionManager, 
+            IPuzzleService<SudokuPuzzle> sudokuPuzzleService,
+            IPuzzleStorageService puzzleStorageService) : base(webSocketConnectionManager)
         {
             _sudokuPuzzleService = sudokuPuzzleService;
+            _puzzleStorageService = puzzleStorageService;
         }
 
         public override Task ReceiveAsync(WebSocket socket, WebSocketReceiveResult result, byte[] buffer)
@@ -29,11 +35,25 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
                     return SudokuSolvePuzzleRequest(socket, json);
                 case "sudokuGeneratePuzzleRequest":
                     return SudokuGeneratePuzzleRequest(socket);
+                case "previouslySolvedPuzzlesRequest":
+                    return PreviouslySolvedPuzzlesRequest(socket);
                 default:
                     return Task.CompletedTask;
             }
         }
-        
+
+        private async Task PreviouslySolvedPuzzlesRequest(WebSocket webSocket)
+        {
+            List<PuzzleDto> previouslySolvedPuzzles = await _puzzleStorageService.GetPreviouslySolvedPuzzles();
+            PuzzleMessage<List<PuzzleDto>> previouslySolvedPuzzlesMessage = new PuzzleMessage<List<PuzzleDto>>
+            {
+                Data = previouslySolvedPuzzles,
+                EventName = "previouslySolvedPuzzles"
+            };
+
+            await SendMessageAsync(webSocket, JsonConvert.SerializeObject(previouslySolvedPuzzlesMessage));
+        }
+
         private async Task SudokuGeneratePuzzleRequest(WebSocket webSocket)
         {
             SudokuPuzzle puzzle = _sudokuPuzzleService.Generate();
@@ -49,7 +69,6 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
 
             await SendMessageAsync(webSocket, JsonConvert.SerializeObject(generatedSudokuPuzzleMessage));
         }
-
         private async Task SudokuSolvePuzzleRequest(WebSocket webSocket, string json)
         {
             PuzzleMessage<SudokuPuzzleState> sudokuPuzzleStateMessage = JsonConvert.DeserializeObject<PuzzleMessage<SudokuPuzzleState>>(json);
@@ -80,7 +99,6 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
             // await Task.Delay(1);
             await SendMessageAsync(webSocket, JsonConvert.SerializeObject(msg2));
         }
-
         private static SudokuStateChangeEvent GetSudokuStateChangeEvent(string a, string b)
         {
             for (int i = 0; i < a.Length; i++)
@@ -118,13 +136,11 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
             public bool LastEvent { get; set; }
             
         }
-
         public class GeneratedSudokuPuzzle
         {
             [JsonProperty("puzzleAsString")]
             public string PuzzleAsString { get; set; }
         }
-
         public class SudokuPuzzleState
         {
             [JsonProperty("asString")]
@@ -132,7 +148,6 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
             [JsonProperty("cells")]
             public Cell[] Cells { get; set; }
         }
-
         public class Data
         {
             [JsonProperty("puzzleState")]
@@ -142,7 +157,6 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
             [JsonProperty("puzzleLength")]
             public int PuzzleLength { get; set; }
         }
-
         public class Cell
         {
             [JsonProperty("row")]

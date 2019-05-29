@@ -200,7 +200,7 @@ namespace Pazuru.Sudoku
         {
             return (row - 1) * SudokuSize * SudokuSize + (col - 1) * SudokuSize + (num - 1);
         }
-        public SudokuPuzzle CreateValidSudokuPuzzle()
+        private SudokuPuzzle CreateValidSudokuPuzzle()
         {
             _indexList = Enumerable.Range(0, 80).ToList().Shuffle();
             RecursiveRemove();
@@ -236,8 +236,7 @@ namespace Pazuru.Sudoku
             _puzzle[index] = 0;
             SudokuExactCover();
             MakeExactCoverGridFromSudoku();
-            DancingLinks dancingLinks = new DancingLinks();
-            IEnumerable<Solution> solutions = dancingLinks.Solve(_problemMatrix);
+            IEnumerable<Solution> solutions = DancingLinks.Solve(_problemMatrix);
 
             if (solutions.Count() == 1)
             {

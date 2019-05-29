@@ -4,9 +4,9 @@ using Pazuru.Sudoku.DLX.EnumerableArrayAdapter;
 
 namespace Pazuru.Sudoku.DLX
 {
-    public class DancingLinks
+    public static class DancingLinks
     {
-        public IEnumerable<Solution> Solve(int[,] matrix)
+        public static IEnumerable<Solution> Solve(int[,] matrix)
         {
             ColumnObject root = BuildInternalStructure(matrix);
             return Search(0, new SearchData(root));

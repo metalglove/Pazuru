@@ -2,7 +2,8 @@
   <div id="app">
     <div id="nav">
       <router-link to="/">Home</router-link> |
-      <router-link to="/puzzle">Puzzle</router-link>
+      <router-link to="/puzzle">Puzzle</router-link> |
+      <router-link to="/previouslysolvedpuzzles">Previously solved puzzles</router-link>
     </div>
     <router-view/>
   </div>

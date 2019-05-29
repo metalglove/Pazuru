@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Pazuru.Sudoku.DLX.EnumerableArrayAdapter
 {
-    public class Enumerable2DArray<T> : IEnumerable<Enumerable2DArrayRow<T>>
+    public sealed class Enumerable2DArray<T> : IEnumerable<Enumerable2DArrayRow<T>>
     {
         private readonly T[,] _array;
 

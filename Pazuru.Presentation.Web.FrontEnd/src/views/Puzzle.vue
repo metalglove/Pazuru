@@ -25,7 +25,6 @@ import EmptyPuzzle from '@/components/puzzles/EmptyPuzzle.vue';
 import { PuzzleViewModel } from '@/viewmodels/PuzzleViewModel';
 import { SudokuViewModel, Cell } from '../viewmodels/SudokuViewModel';
 import { ISudokuPuzzleSevice } from '../services/ISudokuPuzzleService';
-import { SudokuPuzzleService } from '../services/SudokuPuzzleService';
 import { ICommunicatorService } from '../services/ICommunicatorService';
 import { SudokuNumber } from '../types/SudokuNumber';
 import { SudokuPuzzleState } from '../models/Sudoku/SudokuPuzzleState';
