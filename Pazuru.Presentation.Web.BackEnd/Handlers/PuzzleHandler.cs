@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -44,11 +43,11 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
 
         private async Task PreviouslySolvedPuzzlesRequest(WebSocket webSocket)
         {
-            List<PuzzleDto> previouslySolvedPuzzles = await _puzzleStorageService.GetPreviouslySolvedPuzzles();
-            PuzzleMessage<List<PuzzleDto>> previouslySolvedPuzzlesMessage = new PuzzleMessage<List<PuzzleDto>>
+            SolvedPuzzles previouslySolvedPuzzles = await _puzzleStorageService.GetPreviouslySolvedPuzzles();
+            PuzzleMessage<SolvedPuzzles> previouslySolvedPuzzlesMessage = new PuzzleMessage<SolvedPuzzles>
             {
                 Data = previouslySolvedPuzzles,
-                EventName = "previouslySolvedPuzzles"
+                EventName = "previouslySolvedPuzzlesRequest"
             };
 
             await SendMessageAsync(webSocket, JsonConvert.SerializeObject(previouslySolvedPuzzlesMessage));
@@ -72,6 +71,7 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
         private async Task SudokuSolvePuzzleRequest(WebSocket webSocket, string json)
         {
             PuzzleMessage<SudokuPuzzleState> sudokuPuzzleStateMessage = JsonConvert.DeserializeObject<PuzzleMessage<SudokuPuzzleState>>(json);
+
             SudokuPuzzle puzzle = new SudokuPuzzle(new PuzzleState(Encoding.Default.GetBytes(sudokuPuzzleStateMessage.Data.AsString)));
             PuzzleSolveDto solve = _sudokuPuzzleService.Solve(puzzle);
             string currentState = solve.PuzzleStates.First().ToString();
@@ -89,6 +89,14 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
             }
 
             PuzzleState puzzleState = solve.PuzzleStates.Last();
+            PuzzleDto puzzleDto = new PuzzleDto
+            {
+                OriginalPuzzle = sudokuPuzzleStateMessage.Data.AsString,
+                SolvedPuzzle = puzzleState.ToString(),
+                PuzzleType = "Sudoku"
+            };
+            _ = Task.Run(async () => await _puzzleStorageService.SavePuzzle(puzzleDto));
+
             SudokuStateChangeEvent changeEvent = GetSudokuStateChangeEvent(currentState, puzzleState.ToString());
             changeEvent.LastEvent = true;
             PuzzleMessage<SudokuStateChangeEvent> msg2 = new PuzzleMessage<SudokuStateChangeEvent>

@@ -28,7 +28,8 @@ const sudokuViewModel: SudokuViewModel = {
   sudokuPuzzleStateIsGenerated: false
 };
 const previouslySolvedPuzzlesViewModel: PreviouslySolvedPuzzlesViewModel = {
-  previouslySolvedPuzzles: []
+  previouslySolvedPuzzles: [],
+  selectedPuzzle: 'None'
 };
 
 // Create the store
@@ -84,7 +85,7 @@ const router: Router = new Router({
         communicatorService,
         sudokuPuzzleService
       }
-    }, 
+    },
     {
       path: '/previouslysolvedpuzzles',
       name: 'Previously Solved Puzzles',

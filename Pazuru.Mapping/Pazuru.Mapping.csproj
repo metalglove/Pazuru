@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Pazuru.Application\Pazuru.Application.csproj" />
+    <ProjectReference Include="..\Pazuru.Infrastructure\Pazuru.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

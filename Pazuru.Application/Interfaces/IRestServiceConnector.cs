@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Pazuru.Application.DTOs
+namespace Pazuru.Application.Interfaces
 {
     public interface IRestServiceConnector
     {

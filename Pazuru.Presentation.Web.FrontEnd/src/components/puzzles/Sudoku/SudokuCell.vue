@@ -10,7 +10,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator';
 import { Cell } from '@/viewmodels/SudokuViewModel';
 
 @Component({})
-export default class Sudoku extends Vue {
+export default class SudokuCell extends Vue {
     @Prop() private sudokuCell!: Cell;
 
     private getClass(): string[] {

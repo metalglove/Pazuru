@@ -1,3 +1,6 @@
+import { SolvedPuzzle } from '@/models/SolvedPuzzle';
+
 export interface PreviouslySolvedPuzzlesViewModel {
-    previouslySolvedPuzzles: string[];
+  previouslySolvedPuzzles: SolvedPuzzle[];
+  selectedPuzzle: 'Sudoku' | 'Hitori' | 'None';
 }

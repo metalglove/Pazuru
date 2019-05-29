@@ -1,3 +1,5 @@
+import { SolvedPuzzle } from '@/models/SolvedPuzzle';
+
 export interface PreviouslySolvedPuzzlesEvent {
-    previouslySolvedPuzzles: string[];
+    puzzles: SolvedPuzzle[];
 }

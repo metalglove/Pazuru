@@ -4,6 +4,7 @@ using Pazuru.Domain;
 using Pazuru.Mapping;
 using Pazuru.Sudoku;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -16,6 +17,13 @@ namespace Pazuru.Presentation.CLI
             Startup startup = new Startup();
             await startup.InitializeAsync();
             IGenericServiceProvider serviceProvider = startup.GetServiceProvider();
+            IPuzzleStorageService puzzleStorageService = serviceProvider.GetService<IPuzzleStorageService>();
+            SolvedPuzzles puzzles = await puzzleStorageService.GetPreviouslySolvedPuzzles();
+
+
+
+
+
             IPuzzleService<SudokuPuzzle> puzzleService = serviceProvider.GetService<IPuzzleService<SudokuPuzzle>>();
             //byte[] bs = Encoding.Default.GetBytes(
             //    "800000000003600000070090200050007000000045700000100030001000068008500010090000400");

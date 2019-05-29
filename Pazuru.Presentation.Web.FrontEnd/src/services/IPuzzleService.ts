@@ -1,3 +1,3 @@
 export interface IPuzzleService {
-    getPreviouslySolvedPuzzles() : void;
+    getPreviouslySolvedPuzzles(): void;
 }

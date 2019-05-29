@@ -15,7 +15,9 @@ export class SudokuPuzzleService implements ISudokuPuzzleSevice {
 
   public generateSudoku(): void {
     const sudokuGeneratePuzzleRequest: GenerateSudokuPuzzleEventHandler =
-      new GenerateSudokuPuzzleEventHandler(this.getEventHandlerDestructor(), this.state.sudokuViewModel);
+      new GenerateSudokuPuzzleEventHandler(
+        this.communicatorService.eventHandlerDestructor(),
+        this.state.sudokuViewModel);
     this.communicatorService.addEventHandler(sudokuGeneratePuzzleRequest);
     this.communicatorService.emit('sudokuGeneratePuzzleRequest', undefined);
   }
@@ -23,12 +25,10 @@ export class SudokuPuzzleService implements ISudokuPuzzleSevice {
   public solveSudoku(): void {
     const sudokuPuzzleState = (this.state.sudokuViewModel.sudokuPuzzleState!);
     const sudokuStateHandler: SudokuStateChangeEventHandler =
-      new SudokuStateChangeEventHandler(this.getEventHandlerDestructor(), sudokuPuzzleState);
+      new SudokuStateChangeEventHandler(
+        this.communicatorService.eventHandlerDestructor(),
+        sudokuPuzzleState);
     this.communicatorService.addEventHandler(sudokuStateHandler);
     this.communicatorService.emit('sudokuSolvePuzzleRequest', { asString: sudokuPuzzleState.asString });
-  }
-
-  private getEventHandlerDestructor(): EventHandlerDestructor {
-    return (eventHandler: EventHandler) => this.communicatorService.removeEventHandler(eventHandler);
   }
 }
