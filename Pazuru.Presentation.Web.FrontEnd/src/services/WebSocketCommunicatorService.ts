@@ -1,4 +1,4 @@
-import { ICommunicatorService, EventHandler } from './ICommunicatorService';
+import { ICommunicatorService, EventHandler, EventHandlerDestructor } from './ICommunicatorService';
 import { Message } from '@/models/Message';
 
 export class WebSocketCommunicatorService implements ICommunicatorService {
@@ -32,7 +32,9 @@ export class WebSocketCommunicatorService implements ICommunicatorService {
   public emit(eventName: string, data: any): void {
     this.webSocket.send(new Message(eventName, data).toJson());
   }
-
+  public eventHandlerDestructor(): EventHandlerDestructor {
+    return (eventHandler: EventHandler) => this.removeEventHandler(eventHandler);
+  }
   private messageHandler(event: MessageEvent): void {
     // console.log('Received message!', event);
     const message: Message = JSON.parse(event.data);

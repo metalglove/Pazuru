@@ -1,6 +1,5 @@
-import { SudokuPuzzleState } from '@/models/Sudoku/SudokuPuzzleState';
-
 export interface ISudokuPuzzleSevice {
-    generateSudoku(): void;
-    solveSudoku(): void;
+  verifySudoku(): void;
+  generateSudoku(): void;
+  solveSudoku(): void;
 }

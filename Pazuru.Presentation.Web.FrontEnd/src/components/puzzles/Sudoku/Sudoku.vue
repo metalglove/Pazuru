@@ -10,6 +10,11 @@
         </tr>
       </tbody>
     </table>
+    <div v-if="!sudokuViewmodel.sudokuPuzzleStateIsGenerated" class="temp">
+      <p class="aligner">
+        Click on the generate button to generate a Sudoku puzzle!
+      </p>
+    </div>
   </div>
 </template>
 
@@ -50,5 +55,11 @@ export default class Sudoku extends Vue {
   margin-left: auto;
   margin-right: auto;
   font-size: 16pt;
+}
+.temp {
+  width: 100%;
+}
+.aligner {
+  text-align: center;
 }
 </style>

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,13 +11,18 @@ using Pazuru.Sudoku;
 
 namespace Pazuru.Presentation.Web.BackEnd.Handlers
 {
-    public class PuzzleHandler : WebSocketHandler
+    public sealed class PuzzleHandler : WebSocketHandler
     {
         private readonly IPuzzleService<SudokuPuzzle> _sudokuPuzzleService;
+        private readonly IPuzzleStorageService _puzzleStorageService;
 
-        public PuzzleHandler(WebSocketConnectionManager webSocketConnectionManager, IPuzzleService<SudokuPuzzle> sudokuPuzzleService) : base(webSocketConnectionManager)
+        public PuzzleHandler(
+            WebSocketConnectionManager webSocketConnectionManager, 
+            IPuzzleService<SudokuPuzzle> sudokuPuzzleService,
+            IPuzzleStorageService puzzleStorageService) : base(webSocketConnectionManager)
         {
             _sudokuPuzzleService = sudokuPuzzleService;
+            _puzzleStorageService = puzzleStorageService;
         }
 
         public override Task ReceiveAsync(WebSocket socket, WebSocketReceiveResult result, byte[] buffer)
@@ -29,11 +35,50 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
                     return SudokuSolvePuzzleRequest(socket, json);
                 case "sudokuGeneratePuzzleRequest":
                     return SudokuGeneratePuzzleRequest(socket);
+                case "previouslySolvedPuzzlesRequest":
+                    return PreviouslySolvedPuzzlesRequest(socket);
+                case "sudokuVerifyRequest":
+                    return SudokuVerifyPuzzleRequest(socket, json);
                 default:
                     return Task.CompletedTask;
             }
         }
-        
+
+        private async Task SudokuVerifyPuzzleRequest(WebSocket socket, string json)
+        {
+            PuzzleMessage<SudokuVerifyState> sudokuPuzzleStateMessage = JsonConvert.DeserializeObject<PuzzleMessage<SudokuVerifyState>>(json);
+            SudokuPuzzle puzzle = new SudokuPuzzle(new PuzzleState(Encoding.Default.GetBytes(sudokuPuzzleStateMessage.Data.AsString)));
+            PuzzleSolveDto solve = _sudokuPuzzleService.Solve(puzzle);
+            string solvedState = solve.SolvedState.ToString();
+            List<int> correctIndexes = new List<int>();
+            for (int i = 0; i < sudokuPuzzleStateMessage.Data.AsString.Length; i++)
+            {
+                if (sudokuPuzzleStateMessage.Data.CurrentPuzzle[i] == solvedState[i])
+                    correctIndexes.Add(i);
+            }
+
+            PuzzleMessage<VerifySudokuEvent> verifySudokuEvenMessage = new PuzzleMessage<VerifySudokuEvent>
+            {
+                Data = new VerifySudokuEvent {
+                    CorrectIndexes = correctIndexes.ToArray()
+                },
+                EventName = "sudokuVerifyRequest"
+            };
+            await SendMessageAsync(socket, JsonConvert.SerializeObject(verifySudokuEvenMessage));
+        }
+
+        private async Task PreviouslySolvedPuzzlesRequest(WebSocket webSocket)
+        {
+            SolvedPuzzles previouslySolvedPuzzles = await _puzzleStorageService.GetPreviouslySolvedPuzzles();
+            PuzzleMessage<SolvedPuzzles> previouslySolvedPuzzlesMessage = new PuzzleMessage<SolvedPuzzles>
+            {
+                Data = previouslySolvedPuzzles,
+                EventName = "previouslySolvedPuzzlesRequest"
+            };
+
+            await SendMessageAsync(webSocket, JsonConvert.SerializeObject(previouslySolvedPuzzlesMessage));
+        }
+
         private async Task SudokuGeneratePuzzleRequest(WebSocket webSocket)
         {
             SudokuPuzzle puzzle = _sudokuPuzzleService.Generate();
@@ -49,10 +94,10 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
 
             await SendMessageAsync(webSocket, JsonConvert.SerializeObject(generatedSudokuPuzzleMessage));
         }
-
         private async Task SudokuSolvePuzzleRequest(WebSocket webSocket, string json)
         {
             PuzzleMessage<SudokuPuzzleState> sudokuPuzzleStateMessage = JsonConvert.DeserializeObject<PuzzleMessage<SudokuPuzzleState>>(json);
+
             SudokuPuzzle puzzle = new SudokuPuzzle(new PuzzleState(Encoding.Default.GetBytes(sudokuPuzzleStateMessage.Data.AsString)));
             PuzzleSolveDto solve = _sudokuPuzzleService.Solve(puzzle);
             string currentState = solve.PuzzleStates.First().ToString();
@@ -70,6 +115,14 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
             }
 
             PuzzleState puzzleState = solve.PuzzleStates.Last();
+            PuzzleDto puzzleDto = new PuzzleDto
+            {
+                OriginalPuzzle = sudokuPuzzleStateMessage.Data.AsString,
+                SolvedPuzzle = puzzleState.ToString(),
+                PuzzleType = "Sudoku"
+            };
+            _ = Task.Run(async () => await _puzzleStorageService.SavePuzzle(puzzleDto));
+
             SudokuStateChangeEvent changeEvent = GetSudokuStateChangeEvent(currentState, puzzleState.ToString());
             changeEvent.LastEvent = true;
             PuzzleMessage<SudokuStateChangeEvent> msg2 = new PuzzleMessage<SudokuStateChangeEvent>
@@ -80,7 +133,6 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
             // await Task.Delay(1);
             await SendMessageAsync(webSocket, JsonConvert.SerializeObject(msg2));
         }
-
         private static SudokuStateChangeEvent GetSudokuStateChangeEvent(string a, string b)
         {
             for (int i = 0; i < a.Length; i++)
@@ -104,6 +156,12 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
             [JsonProperty("data")]
             public TMessageType Data { get; set; }
         }
+
+        public class VerifySudokuEvent
+        {
+            [JsonProperty("correctIndexes")]
+            public int[] CorrectIndexes { get; set; }
+        }
         public class SudokuStateChangeEvent
         {
             [JsonProperty("index")]
@@ -116,23 +174,22 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
             public bool Changed { get; set; }
             [JsonProperty("lastEvent")]
             public bool LastEvent { get; set; }
-            
         }
-
         public class GeneratedSudokuPuzzle
         {
             [JsonProperty("puzzleAsString")]
             public string PuzzleAsString { get; set; }
         }
-
         public class SudokuPuzzleState
         {
             [JsonProperty("asString")]
             public string AsString { get; set; }
-            [JsonProperty("cells")]
-            public Cell[] Cells { get; set; }
         }
-
+        public class SudokuVerifyState : SudokuPuzzleState
+        {
+            [JsonProperty("currentPuzzle")]
+            public string CurrentPuzzle { get; set; }
+        }
         public class Data
         {
             [JsonProperty("puzzleState")]
@@ -142,7 +199,6 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
             [JsonProperty("puzzleLength")]
             public int PuzzleLength { get; set; }
         }
-
         public class Cell
         {
             [JsonProperty("row")]

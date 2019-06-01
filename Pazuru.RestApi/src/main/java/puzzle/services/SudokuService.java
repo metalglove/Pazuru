@@ -25,7 +25,10 @@ public class SudokuService {
 	}
 
 	public Sudoku save(Sudoku puzzle) {
-		return sudokuRepository.save(puzzle);
+		Optional<Sudoku> sudoku = sudokuRepository.findBySolvedSudoku(puzzle.getSolvedSudoku());
+		if (sudoku.isPresent())
+			return sudoku.get();
+		else
+			return sudokuRepository.save(puzzle);
 	}
-
 }

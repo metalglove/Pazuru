@@ -1,8 +1,8 @@
 import Vue from 'vue';
-import App from './App.vue';
+import Wrapper from './Wrapper.vue';
 import Home from '@/views/Home.vue';
 import Router from 'vue-router';
-import Vuex, { Store } from 'vuex';
+import Vuex, { Store, mapState } from 'vuex';
 import { ICommunicatorService } from './services/ICommunicatorService';
 import { WebSocketCommunicatorService } from './services/WebSocketCommunicatorService';
 import { PuzzleViewModel } from './viewmodels/PuzzleViewModel';
@@ -11,6 +11,10 @@ import { ISudokuPuzzleSevice } from './services/ISudokuPuzzleService';
 import { SudokuPuzzleService } from './services/SudokuPuzzleService';
 import { SudokuViewModel, Cell } from './viewmodels/SudokuViewModel';
 import { SudokuUtilities } from './utilities/SudokuUtilities';
+import { PreviouslySolvedPuzzlesViewModel } from './viewmodels/PreviouslySolvedPuzzlesViewModel';
+import { IPuzzleService } from './services/IPuzzleService';
+import { PuzzleService } from './services/PuzzleService';
+import { ModalViewModel } from './viewmodels/ModalViewModel';
 
 // Vue config
 Vue.config.productionTip = false;
@@ -24,6 +28,17 @@ const sudokuViewModel: SudokuViewModel = {
   sudokuPuzzleState: undefined,
   sudokuPuzzleStateIsGenerated: false
 };
+const previouslySolvedPuzzlesViewModel: PreviouslySolvedPuzzlesViewModel = {
+  previouslySolvedPuzzles: [],
+  selectedPuzzle: 'None'
+};
+const modalViewModel: ModalViewModel = {
+  header: 'header',
+  body: 'body',
+  footer: 'footer',
+  showModal: true,
+  modalType: 'info'
+};
 
 // Create the store
 const store: Store<RootState> = new Store<RootState>({
@@ -31,7 +46,9 @@ const store: Store<RootState> = new Store<RootState>({
     puzzleViewModel,
     sudokuViewModel,
     sudokuPuzzleLength: 9,
-    puzzles: ['Sudoku', 'Hitori', 'None']
+    puzzles: ['Sudoku', 'Hitori', 'None'],
+    previouslySolvedPuzzlesViewModel,
+    modalViewModel
   },
   getters: {
     getSudokuPuzzleLength: (state: RootState): number => {
@@ -46,13 +63,18 @@ const store: Store<RootState> = new Store<RootState>({
   },
   actions: {
 
-  },
+  }
 });
 
 // Create the dependencies for the root component
 const webSocket: WebSocket = new WebSocket('wss://localhost:44399/puzzle');
 const communicatorService: ICommunicatorService = new WebSocketCommunicatorService(webSocket);
 const sudokuPuzzleService: ISudokuPuzzleSevice = new SudokuPuzzleService(communicatorService, store.state);
+const puzzleService: IPuzzleService = new PuzzleService(communicatorService, store.state);
+
+/* tslint:disable */
+const loadView = (name: string): any => import(`./views/${name}.vue`);
+/* tslint:enable */
 
 // Create the router
 const router: Router = new Router({
@@ -61,25 +83,33 @@ const router: Router = new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: 'Home',
       component: Home,
     },
     {
       path: '/puzzle',
-      name: 'puzzle',
-      component: () => import('./views/Puzzle.vue'),
+      name: 'Puzzle',
+      component: () => loadView('Puzzle'),
       props: {
         communicatorService,
         sudokuPuzzleService
+      }
+    },
+    {
+      path: '/previouslysolvedpuzzles',
+      name: 'Previously Solved Puzzles',
+      component: () => loadView('PreviouslySolvedPuzzles'),
+      props: {
+        communicatorService,
+        puzzleService
       }
     }
   ]
 });
 
-const app: Vue = new Vue({
+const wrapper = new Wrapper({
   router,
-  store,
-  render: (h) => h(App),
+  store
 });
 
-app.$mount('#app');
+wrapper.$mount('#app');

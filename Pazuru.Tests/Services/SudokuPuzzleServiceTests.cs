@@ -12,21 +12,21 @@ namespace Pazuru.Tests.Services
     [TestClass]
     public class SudokuPuzzleServiceTests
     {
-        public static IPuzzleService<SudokuPuzzle> SudokuPuzzleService;
+        private static IPuzzleService<SudokuPuzzle> _sudokuPuzzleService;
 
         [ClassInitialize]
         public static void Initialize(TestContext testContext)
         {
             PuzzleGenerator<SudokuPuzzle> sudokuGenerator = new SudokuGenerator();
             PuzzlePrinter<SudokuPuzzle> sudokuPrinter = new SudokuPrinter();
-            SudokuPuzzleService = new SudokuPuzzleService(sudokuGenerator, sudokuPrinter);
+            _sudokuPuzzleService = new SudokuPuzzleService(sudokuGenerator, sudokuPrinter);
         }
 
         [TestMethod]
         public void Generate_Should_Return_A_Solvable_Puzzle()
         {
-            SudokuPuzzle puzzle = SudokuPuzzleService.Generate();
-            PuzzleSolveDto solveDto = SudokuPuzzleService.Solve(puzzle);
+            SudokuPuzzle puzzle = _sudokuPuzzleService.Generate();
+            PuzzleSolveDto solveDto = _sudokuPuzzleService.Solve(puzzle);
             Assert.IsTrue(solveDto.Success);
         }
 
@@ -35,7 +35,7 @@ namespace Pazuru.Tests.Services
         {
             const string solution = "534297618187465329962381574246819753718543296395726841459632187823174965671958432";
             SudokuPuzzle puzzle = CreateValidSudokuPuzzle();
-            PuzzleSolveDto solveDto = SudokuPuzzleService.Solve(puzzle);
+            PuzzleSolveDto solveDto = _sudokuPuzzleService.Solve(puzzle);
             Assert.AreEqual(solution, solveDto.SolvedState.ToString());
             Assert.IsTrue(solveDto.PuzzleStates.Count == 6599);
         }
@@ -67,8 +67,8 @@ namespace Pazuru.Tests.Services
 └───┴───┴───┴───┴───┴───┴───┴───┴───┘
 ";
             SudokuPuzzle puzzle = CreateValidSudokuPuzzle();
-            SudokuPuzzleService.Solve(puzzle);
-            string actualPrint = SudokuPuzzleService.Print(puzzle);
+            _sudokuPuzzleService.Solve(puzzle);
+            string actualPrint = _sudokuPuzzleService.Print(puzzle);
             Assert.AreEqual(expectedPrint, actualPrint);
         }
 
@@ -82,7 +82,7 @@ namespace Pazuru.Tests.Services
                 OriginalPuzzleState =
                     "034007008080065000000300070200000700710040096005000001050002000000170060600900430"
             };
-            PuzzleVerifyDto puzzleVerifyDto = SudokuPuzzleService.Verify(puzzleToVerifyDto);
+            PuzzleVerifyDto puzzleVerifyDto = _sudokuPuzzleService.Verify(puzzleToVerifyDto);
             Assert.IsTrue(puzzleVerifyDto.CorrectIndexes.Count == 28);
             Assert.IsTrue(puzzleVerifyDto.WrongIndexes.Count == 53);
         }
@@ -97,7 +97,7 @@ namespace Pazuru.Tests.Services
                 OriginalPuzzleState =
                     "034007008080065000000300070200000700710040096005000001050002000000170060600900430"
             };
-            PuzzleVerifyDto puzzleVerifyDto = SudokuPuzzleService.Verify(puzzleToVerifyDto);
+            PuzzleVerifyDto puzzleVerifyDto = _sudokuPuzzleService.Verify(puzzleToVerifyDto);
             Assert.IsFalse(puzzleVerifyDto.Success);
             Assert.AreEqual(expectedMessage, puzzleVerifyDto.Message);
         }
@@ -110,7 +110,7 @@ namespace Pazuru.Tests.Services
                 CurrentPuzzleState = "034007008080065666666300070200000700710040096005000001050002000000170060600900430",
                 OriginalPuzzleState = string.Empty
             };
-            PuzzleVerifyDto puzzleVerifyDto = SudokuPuzzleService.Verify(puzzleToVerifyDto);
+            PuzzleVerifyDto puzzleVerifyDto = _sudokuPuzzleService.Verify(puzzleToVerifyDto);
             Assert.IsFalse(puzzleVerifyDto.Success);
         }
 
@@ -122,7 +122,7 @@ namespace Pazuru.Tests.Services
                 CurrentPuzzleState = "034007008080065000000300070200000700710040096005000001050002000000170060600900430",
                 OriginalPuzzleState = "03400700808006500000030007020000072000000170060600900430"
             };
-            PuzzleVerifyDto puzzleVerifyDto = SudokuPuzzleService.Verify(puzzleToVerifyDto);
+            PuzzleVerifyDto puzzleVerifyDto = _sudokuPuzzleService.Verify(puzzleToVerifyDto);
             Assert.IsFalse(puzzleVerifyDto.Success);
         }
 
@@ -134,7 +134,7 @@ namespace Pazuru.Tests.Services
                 CurrentPuzzleState = "03400700808006500000030007020000070430",
                 OriginalPuzzleState = "034007008080065000000300070200000700710040096005000001050002000000170060600900430"
             };
-            PuzzleVerifyDto puzzleVerifyDto = SudokuPuzzleService.Verify(puzzleToVerifyDto);
+            PuzzleVerifyDto puzzleVerifyDto = _sudokuPuzzleService.Verify(puzzleToVerifyDto);
             Assert.IsFalse(puzzleVerifyDto.Success);
         }
 
@@ -147,7 +147,7 @@ namespace Pazuru.Tests.Services
                 CurrentPuzzleState = sudoku.PuzzleState.ToString(),
                 OriginalPuzzleState = sudoku.PuzzleState.ToString()
             };
-            PuzzleVerifyDto puzzleVerifyDto = SudokuPuzzleService.Verify(puzzleToVerifyDto);
+            PuzzleVerifyDto puzzleVerifyDto = _sudokuPuzzleService.Verify(puzzleToVerifyDto);
             Assert.IsFalse(puzzleVerifyDto.Success);
         }
 
@@ -155,7 +155,7 @@ namespace Pazuru.Tests.Services
         public void Solve_Should_Fail_When_PuzzleState_Is_Not_Solvable()
         {
             SudokuPuzzle sudoku = CreateInValidSudokuPuzzle();
-            PuzzleSolveDto solveDto = SudokuPuzzleService.Solve(sudoku);
+            PuzzleSolveDto solveDto = _sudokuPuzzleService.Solve(sudoku);
             Assert.IsFalse(solveDto.Success);
         }
 
@@ -169,6 +169,8 @@ namespace Pazuru.Tests.Services
 
         private static SudokuPuzzle CreateValidSudokuPuzzle()
         {
+            // 270034009805200074040705020100000900000000000300900052402800000050090260000001048
+            // 276134589835269174941785623184652937529347816367918452412876395758493261693521748
             byte[] grid = Encoding.Default.GetBytes("034007008080065000000300070200000700710040096005000001050002000000170060600900430");
             PuzzleState puzzleState = new PuzzleState(grid);
             SudokuPuzzle sudoku = new SudokuPuzzle(puzzleState);

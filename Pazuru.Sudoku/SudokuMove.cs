@@ -1,5 +1,4 @@
 ﻿using Pazuru.Domain;
-using System;
 using System.Linq;
 
 namespace Pazuru.Sudoku

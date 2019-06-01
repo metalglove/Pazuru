@@ -1,81 +1,51 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Pazuru.Domain;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using Pazuru.Sudoku.DLX;
 
 namespace Pazuru.Sudoku
 {
     public sealed class SudokuGenerator : PuzzleGenerator<SudokuPuzzle>
     {
-        private const int Length = 9;
-        private byte[] _puzzle = new byte[81];
-        private List<int> indexList;
+        private const int SudokuSize = 9;
+        private const int MaxRows = SudokuSize * SudokuSize * SudokuSize;
+        private const int MaxColumns = SudokuSize * SudokuSize * 4;
+        private const int Divisor = 3;
+        private const int K = 50;
+        private List<int> _indexList;
+        private int[] _puzzle;
+        private int[,] _problemMatrix;
 
         public override SudokuPuzzle Generate()
         {
-            byte[] grid = Encoding.Default.GetBytes("034007008080065000000300070200000700710040096005000001050002000000170060600900430");
-            PuzzleState puzzleState = new PuzzleState(grid);
-            SudokuPuzzle sudoku = new SudokuPuzzle(puzzleState);
-            return sudoku;
-            //_puzzle = new byte[81];
-            
-            //for (int index = 0; index < Length; index += 3)
-            //{
-            //    // ReSharper disable once SuspiciousTypeConversion.Global
-            //    List<byte> list = Enumerable.Range(1, 9).Select(a => (byte)a).ToList();
-
-            //    List<byte> sudokuNumbers = list.Shuffle();
-            //    for (int i = 0; i <= 2; i++)
-            //    {
-            //        _puzzle[GetIndex(index, index + i)] = TakeAndRemoveFirst(sudokuNumbers);
-            //        _puzzle[GetIndex(index + 1, index + i)] = TakeAndRemoveFirst(sudokuNumbers);
-            //        _puzzle[GetIndex(index + 2, index + i)] = TakeAndRemoveFirst(sudokuNumbers);
-            //    }
-            //}
-
-            //RecursiveFill();
-            //indexList = Enumerable.Range(0, 80).ToList().Shuffle();
-            //RecursiveRemove();
-
-            //PuzzleState puzzleState = new PuzzleState(_puzzle);
-            //SudokuPuzzle sudoku = new SudokuPuzzle(puzzleState);
-            //return sudoku;
-
-            //byte TakeAndRemoveFirst(IList<byte> list)
-            //{
-            //    byte num = list[0];
-            //    list.RemoveAt(0);
-            //    return num;
-            //}
+            PrepareValidSudokuPuzzle();
+            SudokuPuzzle sudokuPuzzle = CreateValidSudokuPuzzle();
+            return sudokuPuzzle;
         }
 
-        private bool RecursiveRemove()
+        private void PrepareValidSudokuPuzzle()
         {
-            foreach (int index in indexList)
+            _puzzle = new int[81];
+            for (int index = 0; index < SudokuSize; index += 3)
             {
-                byte previousNumber = _puzzle[index];
-                if (!TryRemoveNumber(index))
-                    continue;
-                if (RecursiveRemove())
+                List<int> sudokuNumbers = Enumerable.Range(1, 9).ToList().Shuffle();
+                for (int i = 0; i <= 2; i++)
                 {
-                    return true;
+                    _puzzle[GetSudokuIndex(index, index + i)] = TakeAndRemoveFirst(sudokuNumbers);
+                    _puzzle[GetSudokuIndex(index + 1, index + i)] = TakeAndRemoveFirst(sudokuNumbers);
+                    _puzzle[GetSudokuIndex(index + 2, index + i)] = TakeAndRemoveFirst(sudokuNumbers);
                 }
-
-                _puzzle[index] = previousNumber;
             }
+            RecursiveFill();
 
-            return false;
+            static int TakeAndRemoveFirst(IList<int> list)
+            {
+                int num = list[0];
+                list.RemoveAt(0);
+                return num;
+            }
         }
-
-        private static int GetIndex(int row, int column)
-        {
-            return row * Length + column;
-        }
-
         private bool RecursiveFill()
         {
             if (!TryFindEmptyCell(out int row, out int column))
@@ -85,81 +55,33 @@ namespace Pazuru.Sudoku
 
             for (byte number = 1; number <= 9; number++)
             {
-                byte previousNumber = _puzzle[GetIndex(row, column)];
+                int previousNumber = _puzzle[GetSudokuIndex(row, column)];
                 if (!TryPlaceNumber(number, row, column))
                     continue;
                 if (RecursiveFill())
                 {
                     return true;
                 }
-                _puzzle[GetIndex(row, column)] = previousNumber;
+                _puzzle[GetSudokuIndex(row, column)] = previousNumber;
             }
 
             return false;
-        }
-
-        private bool TryRemoveNumber(int index)
-        {
-            byte number = _puzzle[index];
-            _puzzle[index] = 0;
-            int solutionCount = 0;
-
-            Thread thread = new Thread(() => { solutionCount = GetSolutionCount(); }, 192_000_000);
-            thread.Start();
-            thread.Join();
-            Debug.WriteLine($"solution count: {solutionCount}");
-            if (solutionCount == 1)
-            {
-                return true;
-            }
-            _puzzle[index] = number;
-            return false;
-        }
-
-        private int GetSolutionCount()
-        {
-            int solutionCount = 0;
-            RecursiveSolve();
-            return solutionCount;
-
-            bool RecursiveSolve()
-            {
-                if (!TryFindEmptyCell(out int row, out int column))
-                {
-                    return true;
-                }
-
-                for (byte number = 1; number <= 9; number++)
-                {
-                    byte previousNumber = _puzzle[GetIndex(row, column)];
-                    if (!TryPlaceNumber(number, row, column))
-                        continue;
-                    if (RecursiveSolve())
-                    {
-                        solutionCount++;
-                    }
-                    _puzzle[GetIndex(row, column)] = previousNumber;
-                }
-
-                return false;
-            }
         }
         private bool TryPlaceNumber(byte number, int row, int column)
         {
             if (!IsNumberUniqueIn3By3Box(number, row, column) ||
                 !IsNumberUniqueInBothRowAndColumn(number, row, column))
                 return false;
-            _puzzle[GetIndex(row, column)] = number;
+            _puzzle[GetSudokuIndex(row, column)] = number;
             return true;
         }
-
         private bool TryFindEmptyCell(out int row, out int column)
         {
-            for (int i = 0; i < Length; i++)
+            for (int i = 0; i < SudokuSize; i++)
             {
-                for (int j = 0; j < Length; j++)
+                for (int j = 0; j < SudokuSize; j++)
                 {
-                    if (_puzzle[GetIndex(i, j)].Equals(0))
+                    if (_puzzle[GetSudokuIndex(i, j)].Equals(0))
                     {
                         row = i;
                         column = j;
@@ -171,25 +93,157 @@ namespace Pazuru.Sudoku
             column = 0;
             return false;
         }
-
         private bool IsNumberUniqueIn3By3Box(int number, int row, int column)
         {
-            int sqrt = (int)Math.Sqrt(Length);
+            int sqrt = (int)Math.Sqrt(SudokuSize);
             int x = row - row % sqrt;
             int y = column - column % sqrt;
             for (int i = x; i < x + sqrt; i++)
             for (int j = y; j < y + sqrt; j++)
-                if (_puzzle[GetIndex(i, j)].Equals((byte)number))
+                if (_puzzle[GetSudokuIndex(i, j)].Equals((byte)number))
                     return false;
             return true;
         }
-
         private bool IsNumberUniqueInBothRowAndColumn(int number, int row, int column)
         {
-            for (int i = 0; i < Length; i++)
-                if (_puzzle[GetIndex(row, i)].Equals((byte)number) || _puzzle[GetIndex(i, column)].Equals((byte)number))
+            for (int i = 0; i < SudokuSize; i++)
+                if (_puzzle[GetSudokuIndex(row, i)].Equals((byte)number) || _puzzle[GetSudokuIndex(i, column)].Equals((byte)number))
                     return false;
             return true;
+        }
+        private static int GetSudokuIndex(int row, int column)
+        {
+            return row * SudokuSize + column;
+        }
+        private void SudokuExactCover()
+        {
+            _problemMatrix = new int[MaxRows, MaxColumns];
+            int hBase = 0;
+
+            // row-column constraints
+            for (int r = 1; r <= SudokuSize; r++)
+            {
+                for (int c = 1; c <= SudokuSize; c++, hBase++)
+                {
+                    for (int n = 1; n <= SudokuSize; n++)
+                    {
+                        _problemMatrix[GetIndex(r, c, n), hBase] = 1;
+                    }
+                }
+            }
+
+            // row-number constraints
+            for (int r = 1; r <= SudokuSize; r++)
+            {
+                for (int n = 1; n <= SudokuSize; n++, hBase++)
+                {
+                    for (int c1 = 1; c1 <= SudokuSize; c1++)
+                    {
+                        _problemMatrix[GetIndex(r, c1, n), hBase] = 1;
+                    }
+                }
+            }
+
+            // column-number constraints
+
+            for (int c = 1; c <= SudokuSize; c++)
+            {
+                for (int n = 1; n <= SudokuSize; n++, hBase++)
+                {
+                    for (int r1 = 1; r1 <= SudokuSize; r1++)
+                    {
+                        _problemMatrix[GetIndex(r1, c, n), hBase] = 1;
+                    }
+                }
+            }
+
+            // box-number constraints
+
+            for (int br = 1; br <= SudokuSize; br += Divisor)
+            {
+                for (int bc = 1; bc <= SudokuSize; bc += Divisor)
+                {
+                    for (int n = 1; n <= SudokuSize; n++, hBase++)
+                    {
+                        for (int rDelta = 0; rDelta < Divisor; rDelta++)
+                        {
+                            for (int cDelta = 0; cDelta < Divisor; cDelta++)
+                            {
+                                _problemMatrix[GetIndex(br + rDelta, bc + cDelta, n), hBase] = 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        private void MakeExactCoverGridFromSudoku()
+        {
+            for (int i = 1; i <= SudokuSize; i++)
+            {
+                for (int j = 1; j <= SudokuSize; j++)
+                {
+                    int n = _puzzle[GetSudokuIndex(i - 1, j - 1)];
+                    if (n == 0) continue;
+                    for (int num = 1; num <= SudokuSize; num++)
+                    {
+                        if (num == n) continue;
+                        int index = GetIndex(i, j, num);
+                        for (int k = 0; k < MaxColumns; k++)
+                        {
+                            _problemMatrix[index, k] = 0;
+                        }
+                    }
+                }
+            }
+        }
+        private static int GetIndex(int row, int col, int num)
+        {
+            return (row - 1) * SudokuSize * SudokuSize + (col - 1) * SudokuSize + (num - 1);
+        }
+        private SudokuPuzzle CreateValidSudokuPuzzle()
+        {
+            _indexList = Enumerable.Range(0, 80).ToList().Shuffle();
+            RecursiveRemove();
+            byte[] bytes = _puzzle.Select(n => (byte) (n + 48)).ToArray();
+            PuzzleState puzzleState = new PuzzleState(bytes);
+            SudokuPuzzle sudoku = new SudokuPuzzle(puzzleState);
+            return sudoku;
+        }
+        private bool RecursiveRemove()
+        {
+            _indexList = Enumerable.Range(0, 80).ToList().Shuffle();
+
+            foreach (int index in _indexList)
+            {
+                int previousNumber = _puzzle[index];
+                if (!TryRemoveNumber(index))
+                    continue;
+                if (_puzzle.Count(b => b == 0) > K)
+                    return true;
+                if (RecursiveRemove())
+                {
+                    return true;
+                }
+
+                _puzzle[index] = previousNumber;
+            }
+
+            return false;
+        }
+        private bool TryRemoveNumber(int index)
+        {
+            int number = _puzzle[index];
+            _puzzle[index] = 0;
+            SudokuExactCover();
+            MakeExactCoverGridFromSudoku();
+            IEnumerable<Solution> solutions = DancingLinks.Solve(_problemMatrix);
+
+            if (solutions.Count() == 1)
+            {
+                return true;
+            }
+            _puzzle[index] = number;
+            return false;
         }
     }
 

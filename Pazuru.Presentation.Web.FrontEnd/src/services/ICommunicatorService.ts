@@ -2,6 +2,7 @@ export interface ICommunicatorService {
   addEventHandler(eventHandler: EventHandler): void;
   removeEventHandler(eventHandler: EventHandler): void;
   emit(event: string, data: any): void;
+  eventHandlerDestructor(): EventHandlerDestructor;
 }
 
 export type EventCallBack = (data: any) => void;
