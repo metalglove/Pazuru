@@ -24,6 +24,6 @@ export class SudokuUtilities {
   }
   public static getCell(row: number, column: number, puzzleStateString: string): Cell {
     const sudokuNumber: SudokuNumber = (+puzzleStateString.charAt(row * 9 + column)) as SudokuNumber;
-    return { row, column, number: sudokuNumber, editable: sudokuNumber === 0 };
+    return { row, column, number: sudokuNumber, editable: sudokuNumber === 0, verified: false };
   }
 }

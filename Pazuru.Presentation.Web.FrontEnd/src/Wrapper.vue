@@ -6,8 +6,31 @@
       <router-link to="/previouslysolvedpuzzles">Previously solved puzzles</router-link>
     </div>
     <router-view/>
+    <Modal v-if="modalViewModel.showModal" @close="hideModal()"/>
   </div>
 </template>
+
+<script lang="ts">
+import { Component, Vue, Prop } from 'vue-property-decorator';
+import { mapState, StoreOptions, mapGetters } from 'vuex';
+import { RootState } from '@/store/RootState';
+import { ModalViewModel } from './viewmodels/ModalViewModel';
+import Modal from './components/Modal.vue';
+
+@Component({
+  components: {
+    Modal
+  },
+  computed: {
+    ...mapState(['modalViewModel'])
+  }
+})
+export default class Wrapper extends Vue {
+  private hideModal(): void {
+    this.$store.state.modalViewModel.showModal = false;
+  }
+}
+</script>
 
 <style lang="scss">
 #app {

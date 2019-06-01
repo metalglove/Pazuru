@@ -1,5 +1,5 @@
 <template>
-<div class="wrapper">
+  <div class="wrapper">
     <h1> Sudoku </h1>
     <div class="left">
       <h2> Original </h2>

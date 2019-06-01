@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,9 +37,34 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
                     return SudokuGeneratePuzzleRequest(socket);
                 case "previouslySolvedPuzzlesRequest":
                     return PreviouslySolvedPuzzlesRequest(socket);
+                case "sudokuVerifyRequest":
+                    return SudokuVerifyPuzzleRequest(socket, json);
                 default:
                     return Task.CompletedTask;
             }
+        }
+
+        private async Task SudokuVerifyPuzzleRequest(WebSocket socket, string json)
+        {
+            PuzzleMessage<SudokuVerifyState> sudokuPuzzleStateMessage = JsonConvert.DeserializeObject<PuzzleMessage<SudokuVerifyState>>(json);
+            SudokuPuzzle puzzle = new SudokuPuzzle(new PuzzleState(Encoding.Default.GetBytes(sudokuPuzzleStateMessage.Data.AsString)));
+            PuzzleSolveDto solve = _sudokuPuzzleService.Solve(puzzle);
+            string solvedState = solve.SolvedState.ToString();
+            List<int> correctIndexes = new List<int>();
+            for (int i = 0; i < sudokuPuzzleStateMessage.Data.AsString.Length; i++)
+            {
+                if (sudokuPuzzleStateMessage.Data.CurrentPuzzle[i] == solvedState[i])
+                    correctIndexes.Add(i);
+            }
+
+            PuzzleMessage<VerifySudokuEvent> verifySudokuEvenMessage = new PuzzleMessage<VerifySudokuEvent>
+            {
+                Data = new VerifySudokuEvent {
+                    CorrectIndexes = correctIndexes.ToArray()
+                },
+                EventName = "sudokuVerifyRequest"
+            };
+            await SendMessageAsync(socket, JsonConvert.SerializeObject(verifySudokuEvenMessage));
         }
 
         private async Task PreviouslySolvedPuzzlesRequest(WebSocket webSocket)
@@ -130,6 +156,12 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
             [JsonProperty("data")]
             public TMessageType Data { get; set; }
         }
+
+        public class VerifySudokuEvent
+        {
+            [JsonProperty("correctIndexes")]
+            public int[] CorrectIndexes { get; set; }
+        }
         public class SudokuStateChangeEvent
         {
             [JsonProperty("index")]
@@ -142,7 +174,6 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
             public bool Changed { get; set; }
             [JsonProperty("lastEvent")]
             public bool LastEvent { get; set; }
-            
         }
         public class GeneratedSudokuPuzzle
         {
@@ -153,8 +184,11 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
         {
             [JsonProperty("asString")]
             public string AsString { get; set; }
-            [JsonProperty("cells")]
-            public Cell[] Cells { get; set; }
+        }
+        public class SudokuVerifyState : SudokuPuzzleState
+        {
+            [JsonProperty("currentPuzzle")]
+            public string CurrentPuzzle { get; set; }
         }
         public class Data
         {

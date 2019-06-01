@@ -11,8 +11,14 @@
       <select v-model="puzzleViewModel.selectedPuzzle">
         <option v-for="puzzle in puzzles" v-bind:value="puzzle" v-bind:key="puzzle">{{ puzzle }}</option>
       </select>
-      <button @click="solve()">Solve</button>
+      <br/>
       <button @click="generate()">Generate</button>
+      <br/>
+      <button @click="solve()">Solve</button>
+      <br/>
+      <button @click="verify()">Verify</button>
+      <br/>
+      <button @click="describe()">Describe</button>
     </div>
   </div>
 </template>
@@ -45,48 +51,116 @@ export default class PuzzleView extends Vue {
   @Prop() private communicatorService!: ICommunicatorService;
   @Prop() private sudokuPuzzleService!: ISudokuPuzzleSevice;
 
-  // TODO: create a select for selecting a puzzle, on selected will show Sudoku component
-  // TODO: generate button will set the puzzle state
-  // TODO: solve button will solve the puzzle
   private solve(): void {
     const state: RootState = (this.$store as Store<RootState>).state;
     switch (this.getSelectedPuzzleName()) {
       case 'Sudoku': {
         if (!state.sudokuViewModel.sudokuPuzzleStateIsGenerated) {
-          // TODO: show message that the sudoku puzzle needs to be generated first before it can be solved.
+          state.modalViewModel.header = 'Sudoku puzzle state not found';
+          state.modalViewModel.body = 'Generate a Sudoku first';
+          state.modalViewModel.footer = '';
+          state.modalViewModel.showModal = true;
           return;
         }
         this.sudokuPuzzleService.solveSudoku();
-        console.log('Sudoku solve called');
         break;
       }
       case 'Hitori': {
-        // TODO: show message now implemented
-        console.log('Hitori solve called');
+        state.modalViewModel.header = 'Invalid puzzle type';
+        state.modalViewModel.body = 'Hitori is not yet implemented';
+        state.modalViewModel.footer = 'Try again later';
+        state.modalViewModel.showModal = true;
         break;
       }
       case 'None': {
-        // TODO: show message to select a puzzle first
-        console.log('None solve called');
+        state.modalViewModel.header = 'Invalid solve type';
+        state.modalViewModel.body = 'Select a valid solver first';
+        state.modalViewModel.footer = '';
+        state.modalViewModel.showModal = true;
         break;
       }
     }
   }
 
   private generate(): void {
+    const state: RootState = (this.$store as Store<RootState>).state;
     switch (this.getSelectedPuzzleName()) {
       case 'Sudoku':
         this.sudokuPuzzleService.generateSudoku();
-        console.log('Sudoku generate called');
         break;
       case 'Hitori': {
-        // TODO: show message now implemented
-        console.log('Hitori generate called');
+        state.modalViewModel.header = 'Invalid puzzle type';
+        state.modalViewModel.body = 'Hitori is not yet implemented';
+        state.modalViewModel.footer = 'Try again later';
+        state.modalViewModel.showModal = true;
         break;
       }
       case 'None': {
-        // TODO: show message to select a puzzle first
-        console.log('None generate called');
+        state.modalViewModel.header = 'Invalid generate type';
+        state.modalViewModel.body = 'Select a valid generator first';
+        state.modalViewModel.footer = '';
+        state.modalViewModel.showModal = true;
+        break;
+      }
+    }
+  }
+
+  private verify(): void {
+    const state: RootState = (this.$store as Store<RootState>).state;
+    switch (this.getSelectedPuzzleName()) {
+      case 'Sudoku': {
+        if (!state.sudokuViewModel.sudokuPuzzleStateIsGenerated) {
+          state.modalViewModel.header = 'Sudoku puzzle state not found';
+          state.modalViewModel.body = 'Generate a Sudoku first';
+          state.modalViewModel.footer = '';
+          state.modalViewModel.showModal = true;
+          return;
+        }
+        this.sudokuPuzzleService.verifySudoku();
+        break;
+      }
+      case 'Hitori': {
+        state.modalViewModel.header = 'Invalid puzzle type';
+        state.modalViewModel.body = 'Hitori is not yet implemented';
+        state.modalViewModel.footer = 'Try again later';
+        state.modalViewModel.showModal = true;
+        break;
+      }
+      case 'None': {
+        state.modalViewModel.header = 'Invalid puzzle type';
+        state.modalViewModel.body = 'Select a valid puzzle first';
+        state.modalViewModel.footer = '';
+        state.modalViewModel.showModal = true;
+        break;
+      }
+    }
+  }
+
+  private describe(): void {
+    const state: RootState = (this.$store as Store<RootState>).state;
+    switch (this.getSelectedPuzzleName()) {
+      case 'Sudoku': {
+        state.modalViewModel.header = 'Sudoku';
+        state.modalViewModel.body =
+          'A puzzle in which missing numbers are to be filled into a 9 by 9 grid ' +
+          'of squares which are subdivided into 3 by 3 boxes so that every row, every column, ' +
+          'and every box contains the numbers 1 through 9.';
+        state.modalViewModel.footer = 'Have fun!';
+        state.modalViewModel.showModal = true;
+        break;
+      }
+      case 'Hitori': {
+        state.modalViewModel.header = 'Invalid puzzle type';
+        state.modalViewModel.body = 'Hitori is not yet implemented';
+        state.modalViewModel.footer = 'Try again later';
+        state.modalViewModel.showModal = true;
+        break;
+      }
+      case 'None': {
+        state.modalViewModel.header = 'Invalid puzzle type';
+        state.modalViewModel.body = 'Select a valid puzzle first';
+        state.modalViewModel.footer = '';
+        state.modalViewModel.showModal = true;
         break;
       }
     }
@@ -113,5 +187,8 @@ export default class PuzzleView extends Vue {
   float: left;
   width: 25%;
   background-color: lightblue;
+}
+button, select {
+  width: 70px;
 }
 </style>

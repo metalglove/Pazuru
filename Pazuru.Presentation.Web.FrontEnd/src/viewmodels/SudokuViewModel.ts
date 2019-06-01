@@ -16,4 +16,5 @@ export interface Cell {
     column: number;
     number: SudokuNumber;
     editable: boolean;
+    verified: boolean;
 }

@@ -1,38 +1,50 @@
 <template>
     <td :class="getClass()">
       <input type="number" 
-             v-model.number="sudokuCell.number" 
+             v-model.number="sudokuCell.number"
+             @keydown="onKeyDown"
              :readonly="!sudokuCell.editable" /> 
     </td>
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import { Cell } from '@/viewmodels/SudokuViewModel';
+import { SudokuNumber } from '../../../types/SudokuNumber';
 
 @Component({})
 export default class SudokuCell extends Vue {
-    @Prop() private sudokuCell!: Cell;
+  @Prop() private sudokuCell!: Cell;
 
-    private getClass(): string[] {
-      return [
-        'row' + this.sudokuCell.row,
-        'column' + this.sudokuCell.column,
-        this.sudokuCell.editable ? 'editable' : 'not-editable',
-        this.isDarkCell() ? 'darkcell' : ''
-        ];
+  private onKeyDown(evt: any): void {
+    if (evt.keyCode < 48 || evt.keyCode > 57 || !this.sudokuCell.editable) {
+      evt.preventDefault();
+      return;
     }
+    this.sudokuCell.number = evt.key as SudokuNumber;
+    evt.preventDefault();
+  }
 
-    private isDarkCell(): boolean {
-      if (this.sudokuCell.column >= 3 && this.sudokuCell.column <= 5 &&
-          (this.sudokuCell.row < 3 || this.sudokuCell.row > 5)) {
-          return true;
-      }
-      if (this.sudokuCell.row >= 3 && this.sudokuCell.row <= 5 &&
-          (this.sudokuCell.column < 3 || this.sudokuCell.column > 5)) {
-          return true;
-      }
-      return false;
+  private getClass(): string[] {
+    return [
+      'row' + this.sudokuCell.row,
+      'column' + this.sudokuCell.column,
+      this.sudokuCell.editable ? 'editable' : 'not-editable',
+      this.isDarkCell() ? 'darkcell' : '',
+      this.sudokuCell.verified ? 'green' : ''
+      ];
+  }
+
+  private isDarkCell(): boolean {
+    if (this.sudokuCell.column >= 3 && this.sudokuCell.column <= 5 &&
+        (this.sudokuCell.row < 3 || this.sudokuCell.row > 5)) {
+        return true;
     }
+    if (this.sudokuCell.row >= 3 && this.sudokuCell.row <= 5 &&
+        (this.sudokuCell.column < 3 || this.sudokuCell.column > 5)) {
+        return true;
+    }
+    return false;
+  }
 }
 </script>
 
@@ -65,5 +77,8 @@ input::-webkit-outer-spin-button {
 }
 .not-editable input {
   font-weight: bold;
+}
+.green > input{
+  background-color: green;
 }
 </style>
