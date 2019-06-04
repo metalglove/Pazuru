@@ -39,11 +39,14 @@ export class SudokuPuzzleService implements ISudokuPuzzleSevice {
   }
 
   public solveSudoku(): void {
-    const sudokuPuzzleState = (this.state.sudokuViewModel.sudokuPuzzleState!);
+    const sudokuPuzzleState = (this.state.sudokuViewModel.originalPuzzleState!);
+    this.state.sudokuViewModel.sudokuPuzzleState!.cells.forEach((cell) => {
+      cell.verified = false;
+    });
     const sudokuStateHandler: SudokuStateChangeEventHandler =
       new SudokuStateChangeEventHandler(
         this.communicatorService.eventHandlerDestructor(),
-        sudokuPuzzleState);
+        this.state.sudokuViewModel.sudokuPuzzleState!);
     this.communicatorService.addEventHandler(sudokuStateHandler);
     this.communicatorService.emit('sudokuSolvePuzzleRequest', { asString: sudokuPuzzleState.asString });
   }

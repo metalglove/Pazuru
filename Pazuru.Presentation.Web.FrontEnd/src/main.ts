@@ -26,6 +26,7 @@ const puzzleViewModel: PuzzleViewModel = { selectedPuzzle: 'None' };
 const sudokuViewModel: SudokuViewModel = {
   moves: [],
   sudokuPuzzleState: undefined,
+  originalPuzzleState: undefined,
   sudokuPuzzleStateIsGenerated: false
 };
 const previouslySolvedPuzzlesViewModel: PreviouslySolvedPuzzlesViewModel = {
@@ -36,7 +37,7 @@ const modalViewModel: ModalViewModel = {
   header: 'header',
   body: 'body',
   footer: 'footer',
-  showModal: true,
+  showModal: false,
   modalType: 'info'
 };
 

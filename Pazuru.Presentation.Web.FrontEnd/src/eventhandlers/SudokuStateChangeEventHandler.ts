@@ -3,6 +3,7 @@ import { Cell } from '@/viewmodels/SudokuViewModel';
 import { SudokuStateChangeEvent } from './SudokuStateChangeEvent';
 import { SudokuPuzzleState } from '@/models/Sudoku/SudokuPuzzleState';
 import { SudokuUtilities } from '@/utilities/SudokuUtilities';
+import { SudokuNumber } from '@/types/SudokuNumber';
 
 export class SudokuStateChangeEventHandler extends EventHandler {
   public callback!: EventCallBack;
@@ -19,9 +20,7 @@ export class SudokuStateChangeEventHandler extends EventHandler {
   private updateSudokuState(data: SudokuStateChangeEvent): void {
     if (data.changed) {
       const cell: Cell = this.sudokuPuzzleState.cells[data.index];
-      if (cell.number === data.numberBefore) {
-        cell.number = data.numberAfter;
-      }
+      cell.number = data.numberAfter;
     }
     if (data.lastEvent) {
       console.log(SudokuUtilities.toString(this.sudokuPuzzleState));

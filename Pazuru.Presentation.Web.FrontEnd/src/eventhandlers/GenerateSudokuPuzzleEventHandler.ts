@@ -20,7 +20,10 @@ export class GenerateSudokuPuzzleEventHandler extends EventHandler {
     console.log('received generated puzzle');
     const puzzleStateCells: Cell[] = SudokuUtilities.createPuzzleState(data.puzzleAsString);
     const puzzleState: SudokuPuzzleState = new SudokuPuzzleState(data.puzzleAsString, puzzleStateCells);
+    const puzzleStateCells2: Cell[] = SudokuUtilities.createPuzzleState(data.puzzleAsString);
+    const puzzleState2: SudokuPuzzleState = new SudokuPuzzleState(data.puzzleAsString, puzzleStateCells2);
     this.sudokuViewModel.sudokuPuzzleState = puzzleState;
+    this.sudokuViewModel.originalPuzzleState = puzzleState2;
     this.sudokuViewModel.sudokuPuzzleStateIsGenerated = true;
     this.eventHandlerDestructor(this);
   }

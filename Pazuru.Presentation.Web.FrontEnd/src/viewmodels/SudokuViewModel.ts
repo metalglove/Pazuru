@@ -5,6 +5,7 @@ export interface SudokuViewModel {
     moves: Move[];
     sudokuPuzzleStateIsGenerated: boolean;
     sudokuPuzzleState: SudokuPuzzleState | undefined;
+    originalPuzzleState: SudokuPuzzleState | undefined;
 }
 export interface Move {
     cell: Cell;

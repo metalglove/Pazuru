@@ -16,6 +16,9 @@ export class VerifySudokuPuzzleEventHandler extends EventHandler {
   }
 
   private verifySudokuState(data: VerifySudokuPuzzleEvent): void {
+    this.sudokuPuzzleState.cells.forEach((cell) => {
+      cell.verified = false;
+    });
     if (data.correctIndexes.length > 0) {
       data.correctIndexes.forEach((num) => {
         const cell: Cell = this.sudokuPuzzleState.cells[num];

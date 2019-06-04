@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <div class="left">
-      <div v-for="(puzzle) in previouslySolvedPuzzlesViewModel.previouslySolvedPuzzles" 
+      <div v-for="(puzzle) in filter(previouslySolvedPuzzlesViewModel)" 
            v-bind:key="puzzle.puzzleId">
         <SudokuPreview 
           v-if="puzzle.puzzleType === 'Sudoku'" 
@@ -30,6 +30,7 @@ import { SolvedPuzzle } from '../models/SolvedPuzzle';
 import { SudokuPreviewViewModel } from '../viewmodels/SudokuPreviewViewModel';
 import { SudokuUtilities } from '@/utilities/SudokuUtilities';
 import { SudokuPuzzleState } from '@/models/Sudoku/SudokuPuzzleState';
+import {PreviouslySolvedPuzzlesViewModel} from '@/viewmodels/PreviouslySolvedPuzzlesViewModel';
 
 @Component({
   components: {
@@ -59,6 +60,14 @@ export default class PreviouslySolvedPuzzlesView extends Vue {
           SudokuUtilities.createPuzzleState(solvedPuzzle.originalPuzzle))
     };
     return sudokuPreviewViewModel;
+  }
+
+  private filter(solvedPuzzlesVM: PreviouslySolvedPuzzlesViewModel): SolvedPuzzle[] {
+    if (solvedPuzzlesVM.selectedPuzzle === 'None') {
+      return solvedPuzzlesVM.previouslySolvedPuzzles;
+    }
+    return solvedPuzzlesVM.previouslySolvedPuzzles
+      .filter((puzzle) => puzzle.puzzleType === solvedPuzzlesVM.selectedPuzzle);
   }
 }
 </script>
