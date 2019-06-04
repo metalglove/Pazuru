@@ -24,7 +24,7 @@ export class SudokuPuzzleService implements ISudokuPuzzleSevice {
     this.communicatorService.addEventHandler(verifySudokuPuzzleEventHandler);
     this.communicatorService.emit('sudokuVerifyRequest',
     {
-      asString: sudokuPuzzleState.asString,
+      puzzleAsString: sudokuPuzzleState.asString,
       currentPuzzle: SudokuUtilities.toString(sudokuPuzzleState)
     });
   }
@@ -48,6 +48,6 @@ export class SudokuPuzzleService implements ISudokuPuzzleSevice {
         this.communicatorService.eventHandlerDestructor(),
         this.state.sudokuViewModel.sudokuPuzzleState!);
     this.communicatorService.addEventHandler(sudokuStateHandler);
-    this.communicatorService.emit('sudokuSolvePuzzleRequest', { asString: sudokuPuzzleState.asString });
+    this.communicatorService.emit('sudokuSolvePuzzleRequest', { puzzleAsString: sudokuPuzzleState.asString });
   }
 }

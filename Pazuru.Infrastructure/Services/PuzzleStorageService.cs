@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Pazuru.Application.DTOs;
@@ -19,9 +18,11 @@ namespace Pazuru.Infrastructure.Services
         public async Task<SolvedPuzzles> GetPreviouslySolvedPuzzles()
         {
             HalRootObject rootObject = await _restServiceConnector.GetAsync<HalRootObject>("/puzzles/previouslySolvedPuzzles");
-            return new SolvedPuzzles {Puzzles = rootObject.Embedded.Puzzles.ToArray<PuzzleDto>()};
+            return new SolvedPuzzles
+            {
+                Puzzles = rootObject.Embedded?.Puzzles.ToArray<PuzzleDto>() ?? new PuzzleDto[] { }
+            };
         }
-
         public async Task SavePuzzle(PuzzleDto puzzleDto)
         {
             await _restServiceConnector.PostAsync<PuzzleDto, PuzzleDto>("/puzzles/savePuzzle", puzzleDto);

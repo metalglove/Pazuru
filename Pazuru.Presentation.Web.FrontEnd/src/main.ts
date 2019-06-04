@@ -15,6 +15,7 @@ import { PreviouslySolvedPuzzlesViewModel } from './viewmodels/PreviouslySolvedP
 import { IPuzzleService } from './services/IPuzzleService';
 import { PuzzleService } from './services/PuzzleService';
 import { ModalViewModel } from './viewmodels/ModalViewModel';
+import { ErrorEventHandler } from './eventhandlers/ErrorEventHandler';
 
 // Vue config
 Vue.config.productionTip = false;
@@ -70,6 +71,8 @@ const store: Store<RootState> = new Store<RootState>({
 // Create the dependencies for the root component
 const webSocket: WebSocket = new WebSocket('wss://localhost:44399/puzzle');
 const communicatorService: ICommunicatorService = new WebSocketCommunicatorService(webSocket);
+communicatorService.addEventHandler(
+  new ErrorEventHandler(communicatorService.eventHandlerDestructor(), store.state.modalViewModel));
 const sudokuPuzzleService: ISudokuPuzzleSevice = new SudokuPuzzleService(communicatorService, store.state);
 const puzzleService: IPuzzleService = new PuzzleService(communicatorService, store.state);
 

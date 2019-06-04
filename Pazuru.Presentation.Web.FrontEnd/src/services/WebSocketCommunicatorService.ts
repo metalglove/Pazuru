@@ -41,6 +41,13 @@ export class WebSocketCommunicatorService implements ICommunicatorService {
     if (!this.eventHandlers.has(message.eventName)) {
       return;
     }
+    if (message.success === false) {
+      this.eventHandlers.get('errorHandler')!.forEach((eventHandler) => {
+        eventHandler.callback(message.message);
+      });
+      this.eventHandlers.delete(message.eventName);
+      return;
+    }
     this.eventHandlers.get(message.eventName)!
       .forEach((eventHandler: EventHandler) => {
         eventHandler.callback(message.data);
