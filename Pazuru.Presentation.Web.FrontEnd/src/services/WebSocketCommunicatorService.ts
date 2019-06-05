@@ -54,7 +54,9 @@ export class WebSocketCommunicatorService implements ICommunicatorService {
     });
   }
   private errorHandler(event: Event): void {
-    console.log('Error!', event);
+    this.eventHandlers.get('errorHandler')!.forEach((eventHandler) => {
+      eventHandler.callback('Could not connect to the logic server.');
+    });
   }
   private openHandler(event: Event): void {
     console.log('Connected!', event);
