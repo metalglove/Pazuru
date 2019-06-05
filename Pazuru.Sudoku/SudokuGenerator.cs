@@ -39,7 +39,7 @@ namespace Pazuru.Sudoku
             }
             RecursiveFill();
 
-            static int TakeAndRemoveFirst(IList<int> list)
+            int TakeAndRemoveFirst(IList<int> list)
             {
                 int num = list[0];
                 list.RemoveAt(0);
