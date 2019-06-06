@@ -4,6 +4,8 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <LangVersion>7.3</LangVersion>
+    <DebugType>Full</DebugType>
+    <ProjectGuid>{619848E2-D1C7-4F4E-BCA1-29457D1E8E84}</ProjectGuid>
   </PropertyGroup>
 
   <ItemGroup>

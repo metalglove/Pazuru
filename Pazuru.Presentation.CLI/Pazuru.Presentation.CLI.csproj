@@ -4,6 +4,8 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <LangVersion>7.3</LangVersion>
+    <DebugType>Full</DebugType>
+    <ProjectGuid>{A0A6A4BC-FA4B-4A59-ADD0-B2F1A163C0DB}</ProjectGuid>
   </PropertyGroup>
 
   <ItemGroup>
