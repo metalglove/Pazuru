@@ -8,13 +8,12 @@ namespace Pazuru.Presentation.Web.BackEnd
 {
     public class WebSocketManagerMiddleware
     {
-        private readonly RequestDelegate _next;
-        private WebSocketHandler WebSocketHandler { get; set; }
+        private WebSocketHandler WebSocketHandler { get; }
 
         public WebSocketManagerMiddleware(RequestDelegate next,
             WebSocketHandler webSocketHandler)
         {
-            _next = next;
+            _ = next; // Ignore
             WebSocketHandler = webSocketHandler;
         }
 
@@ -42,9 +41,6 @@ namespace Pazuru.Presentation.Web.BackEnd
                         throw new ArgumentOutOfRangeException();
                 }
             });
-
-            //TODO - investigate the Kestrel exception thrown when this is the last middleware
-            //await _next.Invoke(context);
         }
 
         private async Task Receive(WebSocket socket, Action<WebSocketReceiveResult, byte[]> handleMessage)

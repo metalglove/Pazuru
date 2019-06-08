@@ -43,19 +43,15 @@ namespace Pazuru.Application.Services
             }
 
             List<int> correctIndexes = new List<int>();
-            List<int> wrongIndexes = new List<int>();
             for (int i = 0; i < puzzleToVerifyDto.OriginalPuzzleState.Length; i++)
             {
                 if (actualSolvedPuzzleState[i].Equals(puzzleToVerifyDto.CurrentPuzzleState[i]))
                     correctIndexes.Add(i);
-                else
-                    wrongIndexes.Add(i);
             }
             return new PuzzleVerifyDto
             {
                 Success = true,
                 CorrectIndexes = correctIndexes,
-                WrongIndexes = wrongIndexes,
                 Message = "Successfully verified puzzleState."
             };
         }
@@ -72,7 +68,7 @@ namespace Pazuru.Application.Services
                 if (sudokuSolver.Solve())
                     return new PuzzleSolveDto(true, new List<PuzzleState>(sudokuSolver.PuzzleStates), sudokuSolver.GetSolvedState());
             }
-            return new PuzzleSolveDto(false, null, new PuzzleState());
+            return new PuzzleSolveDto(false, default, default);
         }
     }
 }

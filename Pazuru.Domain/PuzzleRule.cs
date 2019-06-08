@@ -4,7 +4,7 @@
     {
         protected TPuzzle Puzzle { get; }
 
-        public PuzzleRule(TPuzzle puzzle)
+        protected PuzzleRule(TPuzzle puzzle)
         {
             Puzzle = puzzle;
         }

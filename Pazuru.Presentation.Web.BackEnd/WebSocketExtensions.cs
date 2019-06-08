@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -21,15 +22,16 @@ namespace Pazuru.Presentation.Web.BackEnd
             IEnumerable<Type> exportedTypes = Assembly.GetEntryAssembly()?.ExportedTypes;
             if (exportedTypes == null)
                 return services;
-            foreach (Type type in exportedTypes)
-            {
-                if (type.GetTypeInfo().BaseType == typeof(WebSocketHandler))
-                {
-                    services.AddSingleton(type);
-                }
-            }
 
+            exportedTypes
+                .Where(type => type.GetTypeInfo().BaseType == typeof(WebSocketHandler))
+                .ForEach(type => services.AddSingleton(type));
             return services;
+        }
+        private static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
+        {
+            foreach (T item in source)
+                action(item);
         }
     }
 }

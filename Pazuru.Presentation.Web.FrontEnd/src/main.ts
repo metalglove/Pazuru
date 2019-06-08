@@ -95,7 +95,6 @@ const router: Router = new Router({
       name: 'Puzzle',
       component: () => loadView('Puzzle'),
       props: {
-        communicatorService,
         sudokuPuzzleService
       }
     },

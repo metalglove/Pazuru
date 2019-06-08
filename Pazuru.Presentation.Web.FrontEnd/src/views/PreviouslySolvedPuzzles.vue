@@ -21,7 +21,6 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator';
-import { ICommunicatorService } from '../services/ICommunicatorService';
 import { mapGetters, mapState, Store } from 'vuex';
 import { RootState } from '@/store/RootState';
 import { IPuzzleService } from '../services/IPuzzleService';
@@ -44,7 +43,6 @@ import {PreviouslySolvedPuzzlesViewModel} from '@/viewmodels/PreviouslySolvedPuz
   }
 })
 export default class PreviouslySolvedPuzzlesView extends Vue {
-  @Prop() private communicatorService!: ICommunicatorService;
   @Prop() private puzzleService!: IPuzzleService;
 
   private getSudokuPreviewViewModel(solvedPuzzle: SolvedPuzzle): SudokuPreviewViewModel {

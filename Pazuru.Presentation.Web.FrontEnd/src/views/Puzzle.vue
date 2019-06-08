@@ -31,7 +31,6 @@ import EmptyPuzzle from '@/components/puzzles/EmptyPuzzle.vue';
 import { PuzzleViewModel } from '@/viewmodels/PuzzleViewModel';
 import { SudokuViewModel, Cell } from '../viewmodels/SudokuViewModel';
 import { ISudokuPuzzleSevice } from '../services/ISudokuPuzzleService';
-import { ICommunicatorService } from '../services/ICommunicatorService';
 import { SudokuNumber } from '../types/SudokuNumber';
 import { SudokuPuzzleState } from '../models/Sudoku/SudokuPuzzleState';
 import { mapGetters, mapState, Store } from 'vuex';
@@ -48,7 +47,6 @@ import { RootState } from '@/store/RootState';
   }
 })
 export default class PuzzleView extends Vue {
-  @Prop() private communicatorService!: ICommunicatorService;
   @Prop() private sudokuPuzzleService!: ISudokuPuzzleSevice;
 
   private solve(): void {

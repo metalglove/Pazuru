@@ -16,9 +16,10 @@ namespace Pazuru.Presentation.Web.BackEnd
             WebSocketConnectionManager = webSocketConnectionManager;
         }
 
-        public virtual async Task OnConnected(WebSocket socket)
+        public virtual Task OnConnected(WebSocket socket)
         {
             WebSocketConnectionManager.AddSocket(socket);
+            return Task.CompletedTask;
         }
 
         public virtual async Task OnDisconnected(WebSocket socket)
@@ -37,11 +38,6 @@ namespace Pazuru.Presentation.Web.BackEnd
                 messageType: WebSocketMessageType.Text,
                 endOfMessage: true,
                 cancellationToken: CancellationToken.None);
-        }
-
-        public async Task SendMessageAsync(string socketId, string message)
-        {
-            await SendMessageAsync(WebSocketConnectionManager.GetSocketById(socketId), message);
         }
 
         public async Task SendMessageToAllAsync(string message)

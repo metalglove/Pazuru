@@ -15,9 +15,6 @@ namespace Pazuru.Mapping
 
         public static IServiceCollection AddApplicationServices(this IServiceCollection serviceCollection)
         {
-            // TODO: wire up services
-
-
             serviceCollection.AddTransient<PuzzleGenerator<SudokuPuzzle>, SudokuGenerator>();
             serviceCollection.AddTransient<PuzzlePrinter<SudokuPuzzle>, SudokuPrinter>();
             serviceCollection.AddTransient<IRestServiceConnector, RestServiceConnector>(serviceProvider => new RestServiceConnector(Client));

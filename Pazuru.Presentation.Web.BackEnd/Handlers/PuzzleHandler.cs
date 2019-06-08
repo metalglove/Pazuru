@@ -55,24 +55,39 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
             VerifySudokuRequest sudokuPuzzleStateMessage = JsonConvert.DeserializeObject<VerifySudokuRequest>(json);
             SudokuPuzzle puzzle = new SudokuPuzzle(new PuzzleState(Encoding.Default.GetBytes(sudokuPuzzleStateMessage.Data.PuzzleAsString)));
             PuzzleSolveDto solve = _sudokuPuzzleService.Solve(puzzle);
-            string solvedState = solve.SolvedState.ToString();
-            List<int> correctIndexes = new List<int>();
-            for (int i = 0; i < sudokuPuzzleStateMessage.Data.PuzzleAsString.Length; i++)
+            VerifySudokuPuzzleResponse verifySudokuEvenMessage;
+            if (!solve.Success)
             {
-                if (sudokuPuzzleStateMessage.Data.CurrentPuzzle[i] == solvedState[i])
-                    correctIndexes.Add(i);
-            }
-
-            VerifySudokuPuzzleResponse verifySudokuEvenMessage = new VerifySudokuPuzzleResponse
-            {
-                Data = new VerifiedSudokuState
+                verifySudokuEvenMessage = new VerifySudokuPuzzleResponse
                 {
-                    CorrectIndexes = correctIndexes.ToArray()
-                },
-                EventName = "sudokuVerifyRequest",
-                Message = "",
-                Success = true
-            };
+                    Data = default,
+                    EventName = "sudokuVerifyRequest",
+                    Message = "Failed to verify puzzle.",
+                    Success = false
+                };
+            }
+            else
+            {
+                string solvedState = solve.SolvedState.ToString();
+                List<int> correctIndexes = new List<int>();
+                for (int i = 0; i < sudokuPuzzleStateMessage.Data.PuzzleAsString.Length; i++)
+                {
+                    if (sudokuPuzzleStateMessage.Data.CurrentPuzzle[i] == solvedState[i])
+                        correctIndexes.Add(i);
+                }
+
+                verifySudokuEvenMessage = new VerifySudokuPuzzleResponse
+                {
+                    Data = new VerifiedSudokuState
+                    {
+                        CorrectIndexes = correctIndexes.ToArray()
+                    },
+                    EventName = "sudokuVerifyRequest",
+                    Message = "",
+                    Success = true
+                };
+            }
+            
             await SendMessageAsync(socket, JsonConvert.SerializeObject(verifySudokuEvenMessage));
         }
         private async Task PreviouslySolvedPuzzlesRequest(WebSocket webSocket)
@@ -158,7 +173,7 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
                 SolvedPuzzle = puzzleState.ToString(),
                 PuzzleType = "Sudoku"
             };
-            _ = Task.Run(async () => await _puzzleStorageService.SavePuzzle(puzzleDto));
+            _ = _puzzleStorageService.SavePuzzle(puzzleDto);
 
             SudokuStateChange changeEvent = GetSudokuStateChangeEvent(currentState, puzzleState.ToString());
             changeEvent.LastEvent = true;

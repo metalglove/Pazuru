@@ -18,7 +18,7 @@ namespace Pazuru.Mapping
 
         public TService GetService<TService>()
         {
-            return (TService)_serviceProvider.GetService(typeof(TService));
+            return (TService)GetService(typeof(TService));
         }
     }
 }
