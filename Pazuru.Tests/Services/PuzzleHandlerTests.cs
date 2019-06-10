@@ -53,6 +53,11 @@ namespace Pazuru.Tests.Services
             string json = JsonConvert.SerializeObject(solveSudokuRequest);
             byte[] messageBuffer = Encoding.Default.GetBytes(json);
             WebSocketMock webSocketMock = new WebSocketMock();
+            _httpHandler.AddResponse(new JObject(new JProperty("puzzleId", 1), new JProperty("puzzleType", "Sudoku"),
+                new JProperty("solvedPuzzle",
+                    "534297618187465329962381574246819753718543296395726841459632187823174965671958432"),
+                new JProperty("originalPuzzle",
+                    "034007008080065000000300070200000700710040096005000001050002000000170060600900430")).ToString());
             await _puzzleHandler.ReceiveAsync(webSocketMock, messageBuffer);
 
             Assert.IsTrue(webSocketMock.SentMessages.Count(tuple => tuple.preMessage.EventName.Equals("sudokuPuzzleStateChange")) == 6598);
