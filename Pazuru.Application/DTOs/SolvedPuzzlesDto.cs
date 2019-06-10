@@ -2,7 +2,7 @@
 
 namespace Pazuru.Application.DTOs
 {
-    public class SolvedPuzzles
+    public class SolvedPuzzlesDto
     {
         [JsonProperty("puzzles")]
         public PuzzleDto[] Puzzles { get; set; }

@@ -1,11 +1,18 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Pazuru.Application.Interfaces;
+using Pazuru.Infrastructure;
 
 namespace Pazuru.Presentation.Web.BackEnd
 {
+    // NOTE: Excluded because PazuruWebSocket is excluded and this class only gets
+    // called by the middleware pipeline and invokes a websocket request. 
+    // This is covered in the tests by a received mock of the IWebSocket interface.
+    [ExcludeFromCodeCoverage]
     public class WebSocketManagerMiddleware
     {
         private WebSocketHandler WebSocketHandler { get; }
@@ -13,7 +20,7 @@ namespace Pazuru.Presentation.Web.BackEnd
         public WebSocketManagerMiddleware(RequestDelegate next,
             WebSocketHandler webSocketHandler)
         {
-            _ = next; // Ignore
+            _ = next; // NOTE: Ignore from pipeline
             WebSocketHandler = webSocketHandler;
         }
 
@@ -22,7 +29,7 @@ namespace Pazuru.Presentation.Web.BackEnd
             if (!context.WebSockets.IsWebSocketRequest)
                 return;
 
-            WebSocket socket = await context.WebSockets.AcceptWebSocketAsync();
+            PazuruWebSocket socket = new PazuruWebSocket(await context.WebSockets.AcceptWebSocketAsync());
             await WebSocketHandler.OnConnected(socket);
 
             await Receive(socket, async (result, buffer) =>
@@ -30,7 +37,7 @@ namespace Pazuru.Presentation.Web.BackEnd
                 switch (result.MessageType)
                 {
                     case WebSocketMessageType.Text:
-                        await WebSocketHandler.ReceiveAsync(socket, result, buffer);
+                        await WebSocketHandler.ReceiveAsync(socket, buffer);
                         return;
                     case WebSocketMessageType.Close:
                         await WebSocketHandler.OnDisconnected(socket);
@@ -43,15 +50,13 @@ namespace Pazuru.Presentation.Web.BackEnd
             });
         }
 
-        private async Task Receive(WebSocket socket, Action<WebSocketReceiveResult, byte[]> handleMessage)
+        private static async Task Receive(IWebSocket socket, Action<WebSocketReceiveResult, byte[]> handleMessage)
         {
             byte[] buffer = new byte[1024 * 4];
 
             while (socket.State == WebSocketState.Open)
             {
-                WebSocketReceiveResult result = await socket.ReceiveAsync(buffer: new ArraySegment<byte>(buffer),
-                    cancellationToken: CancellationToken.None);
-
+                WebSocketReceiveResult result = await socket.ReceiveAsync(buffer: new ArraySegment<byte>(buffer), cancellationToken: CancellationToken.None);
                 handleMessage(result, buffer);
                 buffer = new byte[1024 * 4];
             }

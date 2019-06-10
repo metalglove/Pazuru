@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Pazuru.Application\Pazuru.Application.csproj" />
+    <ProjectReference Include="..\Pazuru.Presentation.Web.BackEnd\Pazuru.Presentation.Web.BackEnd.csproj" />
   </ItemGroup>
 
 </Project>

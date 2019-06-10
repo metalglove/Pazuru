@@ -5,7 +5,7 @@ namespace Pazuru.Application.Interfaces
 {
     public interface IPuzzleStorageService
     {
-        Task<SolvedPuzzles> GetPreviouslySolvedPuzzles();
+        Task<SolvedPuzzlesDto> GetPreviouslySolvedPuzzles();
         Task SavePuzzle(PuzzleDto puzzleDto);
     }
 }

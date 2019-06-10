@@ -4,14 +4,16 @@ using Pazuru.Application.Services;
 using Pazuru.Domain;
 using Pazuru.Sudoku;
 using System;
-using System.Net.Http;
+using System.Diagnostics.CodeAnalysis;
+using Pazuru.Infrastructure;
 using Pazuru.Infrastructure.Services;
 
 namespace Pazuru.Mapping
 {
+    [ExcludeFromCodeCoverage]
     public static class StartupExtensions
     {
-        private static readonly HttpClient Client = new HttpClient();
+        private static readonly HttpClientHandler Client = new HttpClientHandler();
 
         public static IServiceCollection AddApplicationServices(this IServiceCollection serviceCollection)
         {

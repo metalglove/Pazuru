@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
@@ -8,9 +9,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Pazuru.Presentation.Web.BackEnd
 {
+    [ExcludeFromCodeCoverage]
     public static class WebSocketExtensions
     {
-        public static IApplicationBuilder MapWebSocketManager<TWebSocketHandler>(this IApplicationBuilder app, PathString path) where TWebSocketHandler: WebSocketHandler
+        public static IApplicationBuilder MapWebSocketManager<TWebSocketHandler>(this IApplicationBuilder app, PathString path) where TWebSocketHandler : WebSocketHandler
         {
             return app.Map(path, self => self.UseMiddleware<WebSocketManagerMiddleware>(self.ApplicationServices.GetService<TWebSocketHandler>()));
         }

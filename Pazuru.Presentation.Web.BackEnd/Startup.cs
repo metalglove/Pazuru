@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Pazuru.Mapping;
@@ -6,6 +7,7 @@ using Pazuru.Presentation.Web.BackEnd.Handlers;
 
 namespace Pazuru.Presentation.Web.BackEnd
 {
+    [ExcludeFromCodeCoverage]
     internal class Startup
     {
         public void ConfigureServices(IServiceCollection services)

@@ -4,41 +4,35 @@ using System.Linq;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Pazuru.Application.Interfaces;
 
 namespace Pazuru.Presentation.Web.BackEnd
 {
     public class WebSocketConnectionManager
     {
-        private readonly ConcurrentDictionary<string, WebSocket> _sockets = new ConcurrentDictionary<string, WebSocket>();
+        private readonly ConcurrentDictionary<string, IWebSocket> _webSockets = new ConcurrentDictionary<string, IWebSocket>();
 
-        public WebSocket GetSocketById(string id)
+        public ConcurrentDictionary<string, IWebSocket> GetAll()
         {
-            return _sockets.FirstOrDefault(p => p.Key == id).Value;
+            return _webSockets;
         }
 
-        public ConcurrentDictionary<string, WebSocket> GetAll()
+        public string GetId(IWebSocket socket)
         {
-            return _sockets;
+            return _webSockets.FirstOrDefault(p => p.Value == socket).Key;
         }
-
-        public string GetId(WebSocket socket)
+        public void AddSocket(IWebSocket socket)
         {
-            return _sockets.FirstOrDefault(p => p.Value == socket).Key;
+            _webSockets.TryAdd(CreateConnectionId(), socket);
         }
-        public void AddSocket(WebSocket socket)
-        {
-            _sockets.TryAdd(CreateConnectionId(), socket);
-        }
-
         public async Task RemoveSocket(string id)
         {
-            _sockets.TryRemove(id, out WebSocket socket);
+            _webSockets.TryRemove(id, out IWebSocket socket);
 
             await socket.CloseAsync(closeStatus: WebSocketCloseStatus.NormalClosure,
                 statusDescription: "Closed by the WebSocketManager",
                 cancellationToken: CancellationToken.None);
         }
-
         private static string CreateConnectionId()
         {
             return Guid.NewGuid().ToString();

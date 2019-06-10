@@ -15,10 +15,10 @@ namespace Pazuru.Infrastructure.Services
             _restServiceConnector = restServiceConnector;
         }
 
-        public async Task<SolvedPuzzles> GetPreviouslySolvedPuzzles()
+        public async Task<SolvedPuzzlesDto> GetPreviouslySolvedPuzzles()
         {
             HalRootObject rootObject = await _restServiceConnector.GetAsync<HalRootObject>("/puzzles/previouslySolvedPuzzles");
-            return new SolvedPuzzles
+            return new SolvedPuzzlesDto
             {
                 Puzzles = rootObject.Embedded?.Puzzles.ToArray<PuzzleDto>() ?? new PuzzleDto[] { }
             };

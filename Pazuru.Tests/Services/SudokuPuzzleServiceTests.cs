@@ -73,7 +73,7 @@ namespace Pazuru.Tests.Services
         }
 
         [TestMethod]
-        public void Verify_Should_Return_28_CorrectIndexes_And_53_WrongIndexes()
+        public void Verify_Should_Return_28_CorrectIndexes()
         {
             PuzzleToVerifyDto puzzleToVerifyDto = new PuzzleToVerifyDto
             {
@@ -84,7 +84,6 @@ namespace Pazuru.Tests.Services
             };
             PuzzleVerifyDto puzzleVerifyDto = _sudokuPuzzleService.Verify(puzzleToVerifyDto);
             Assert.IsTrue(puzzleVerifyDto.CorrectIndexes.Count == 28);
-            Assert.IsTrue(puzzleVerifyDto.WrongIndexes.Count == 53);
         }
 
         [TestMethod]

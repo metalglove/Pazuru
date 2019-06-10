@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,7 +31,7 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
             _puzzleStorageService = puzzleStorageService;
         }
 
-        public override Task ReceiveAsync(WebSocket socket, WebSocketReceiveResult result, byte[] buffer)
+        public override Task ReceiveAsync(IWebSocket socket, byte[] buffer)
         {
             string json = Encoding.UTF8.GetString(buffer);
             PreMessage preMessage = JsonConvert.DeserializeObject<PreMessage>(json);
@@ -50,7 +49,7 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
                     return Task.CompletedTask;
             }
         }
-        private async Task SudokuVerifyPuzzleRequest(WebSocket socket, string json)
+        private async Task SudokuVerifyPuzzleRequest(IWebSocket socket, string json)
         {
             VerifySudokuRequest sudokuPuzzleStateMessage = JsonConvert.DeserializeObject<VerifySudokuRequest>(json);
             SudokuPuzzle puzzle = new SudokuPuzzle(new PuzzleState(Encoding.Default.GetBytes(sudokuPuzzleStateMessage.Data.PuzzleAsString)));
@@ -90,10 +89,10 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
             
             await SendMessageAsync(socket, JsonConvert.SerializeObject(verifySudokuEvenMessage));
         }
-        private async Task PreviouslySolvedPuzzlesRequest(WebSocket webSocket)
+        private async Task PreviouslySolvedPuzzlesRequest(IWebSocket webSocket)
         {
             CancellationTokenSource cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-            Task<SolvedPuzzles> getPuzzlesTask =
+            Task<SolvedPuzzlesDto> getPuzzlesTask =
                 Task.Run(async () => await _puzzleStorageService.GetPreviouslySolvedPuzzles(), cts.Token)
                     .ContinueWith(task =>
                         {
@@ -103,8 +102,8 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
                         }, 
                         TaskContinuationOptions.None);
 
-            SolvedPuzzles previouslySolvedPuzzles = await getPuzzlesTask;
-            bool success = previouslySolvedPuzzles != default(SolvedPuzzles);
+            SolvedPuzzlesDto previouslySolvedPuzzles = await getPuzzlesTask;
+            bool success = previouslySolvedPuzzles != default(SolvedPuzzlesDto);
 
             PreviouslySolvedPuzzlesResponse previouslySolvedPuzzlesMessage = new PreviouslySolvedPuzzlesResponse
             {
@@ -116,7 +115,7 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
         
             await SendMessageAsync(webSocket, JsonConvert.SerializeObject(previouslySolvedPuzzlesMessage));
         }
-        private async Task SudokuGeneratePuzzleRequest(WebSocket webSocket)
+        private async Task SudokuGeneratePuzzleRequest(IWebSocket webSocket)
         {
             SudokuPuzzle puzzle = _sudokuPuzzleService.Generate();
             string puzzleStateAsString = puzzle.PuzzleState.ToString();
@@ -133,7 +132,7 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
 
             await SendMessageAsync(webSocket, JsonConvert.SerializeObject(generatedSudokuPuzzleMessage));
         }
-        private async Task SudokuSolvePuzzleRequest(WebSocket webSocket, string json)
+        private async Task SudokuSolvePuzzleRequest(IWebSocket webSocket, string json)
         {
             SolveSudokuRequest sudokuPuzzleStateMessage = JsonConvert.DeserializeObject<SolveSudokuRequest>(json);
 
@@ -188,13 +187,13 @@ namespace Pazuru.Presentation.Web.BackEnd.Handlers
         }
         private static SudokuStateChange GetSudokuStateChangeEvent(string a, string b)
         {
-            for (int i = 0; i < a.Length; i++)
+            for (int i = 0; i < a.Length - 1; i++)
             {
                 if (a[i] != b[i])
                     return new SudokuStateChange { Changed = true, Index = i, NumberBefore = a[i] - 48, NumberAfter = b[i] - 48, LastEvent = false };
             }
 
-            return new SudokuStateChange { Changed = true, Index = 80, NumberBefore = a[80], NumberAfter = b[80], LastEvent = false };
+            return new SudokuStateChange { Changed = true, Index = 80, NumberBefore = a[80] - 48, NumberAfter = b[80] - 48, LastEvent = true };
         }
     }
 }
