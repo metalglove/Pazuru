@@ -1,8 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <DebugType>Full</DebugType>
+    <LangVersion>7.3</LangVersion>
     <ProjectGuid>{7C49A5D2-ED0F-4E01-A714-8B0575DD3D3E}</ProjectGuid>
   </PropertyGroup>
 
