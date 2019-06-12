@@ -202,7 +202,7 @@ namespace Pazuru.Sudoku
         }
         private SudokuPuzzle CreateValidSudokuPuzzle()
         {
-            _indexList = Enumerable.Range(0, 80).ToList().Shuffle();
+            _indexList = Enumerable.Range(0, 81).ToList().Shuffle();
             RecursiveRemove();
             byte[] bytes = _puzzle.Select(n => (byte) (n + 48)).ToArray();
             PuzzleState puzzleState = new PuzzleState(bytes);
@@ -211,7 +211,7 @@ namespace Pazuru.Sudoku
         }
         private bool RecursiveRemove()
         {
-            _indexList = Enumerable.Range(0, 80).ToList().Shuffle();
+            _indexList = Enumerable.Range(0, 81).ToList().Shuffle();
 
             foreach (int index in _indexList)
             {
