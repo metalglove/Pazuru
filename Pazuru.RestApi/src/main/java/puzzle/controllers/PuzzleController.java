@@ -33,7 +33,7 @@ public class PuzzleController {
     private HitoriService hitoriService;
 
     @GetMapping(value = "/previouslySolvedPuzzles", produces = { "application/hal+json" })
-    public Resources<Puzzle> getPreviouslySolvedPuzzles() {
+    public ResultDto<List<Puzzle>> getPreviouslySolvedPuzzles() {
         List<Puzzle> puzzles = new ArrayList<>();
         List<Sudoku> sudokus = sudokuService.getAll();
         List<Hitori> hitoris = hitoriService.getAll();
@@ -60,8 +60,12 @@ public class PuzzleController {
             puzzles.add(puzzle);
         }
         Link link = linkTo(methodOn(PuzzleController.class).getPreviouslySolvedPuzzles()).withSelfRel();
-        Resources<Puzzle> result = new Resources<Puzzle>(puzzles, link);
-        return result;
+        ResultDto<List<Puzzle>> resultDto = new ResultDto<List<Puzzle>>();
+        resultDto.setData(puzzles);
+        resultDto.setSuccess(true);
+        resultDto.setMessage("Successfully found all previously solved puzzles.");
+        resultDto.add(link);
+        return resultDto;
     }
 
     @GetMapping(value = "/sudoku/{id}", produces = { "application/json" })
@@ -82,24 +86,44 @@ public class PuzzleController {
             return null;
     }
 
-    @PostMapping(value = "/savePuzzle", produces = { "application/json"})
-    public Puzzle postPuzzle(@RequestBody final Puzzle puzzleBody) {
+    @PostMapping(value = "/savePuzzle", produces = { "application/hal+json" })
+    public ResultDto<Puzzle> postPuzzle(@RequestBody final Puzzle puzzleBody) {
+        ResultDto<Puzzle> resultDto;
+
         if ("Sudoku".equals(puzzleBody.getPuzzleType())) {
             Sudoku sudokuToSave = new Sudoku();
             sudokuToSave.setOriginalSudoku(puzzleBody.getOriginalPuzzle());
             sudokuToSave.setSolvedSudoku(puzzleBody.getSolvedPuzzle());
             Sudoku savedSudoku = sudokuService.save(sudokuToSave);
             puzzleBody.setPuzzleId(savedSudoku.getSudokuId());
+            String sudokuId = String.valueOf(savedSudoku.getSudokuId());
+            Link selfLink = linkTo(methodOn(PuzzleController.class).getSudokuById(sudokuId)).withSelfRel();
+            puzzleBody.add(selfLink);
+            resultDto = new ResultDto<Puzzle>();
+            resultDto.setData(puzzleBody);
+            resultDto.setSuccess(true);
+            resultDto.setMessage("Saved successfully.");
         } else if ("Hitori".equals(puzzleBody.getPuzzleType())) {
             Hitori hitoriToSave = new Hitori();
             hitoriToSave.setOriginalHitori(puzzleBody.getOriginalPuzzle());
             hitoriToSave.setSolvedHitori(puzzleBody.getSolvedPuzzle());
             Hitori savedHitori = hitoriService.save(hitoriToSave);
             puzzleBody.setPuzzleId(savedHitori.getHitoriId());
+            String hitoriId = String.valueOf(savedHitori.getHitoriId());
+            Link selfLink = linkTo(methodOn(PuzzleController.class).getSudokuById(hitoriId)).withSelfRel();
+            puzzleBody.add(selfLink);
+            resultDto = new ResultDto<Puzzle>();
+            resultDto.setData(puzzleBody);
+            resultDto.setSuccess(true);
+            resultDto.setMessage("Saved successfully.");
         }
         else {
-            return null;
+            resultDto = new ResultDto<>();
+            resultDto.setSuccess(false);
+            resultDto.setMessage("Failed to save puzzle.");
         }
-        return puzzleBody;
+        Link link = linkTo(methodOn(PuzzleController.class).postPuzzle(puzzleBody)).withSelfRel();
+        resultDto.add(link);
+        return resultDto;
     }
 }

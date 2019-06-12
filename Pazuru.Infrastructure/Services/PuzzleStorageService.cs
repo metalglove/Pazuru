@@ -17,44 +17,42 @@ namespace Pazuru.Infrastructure.Services
 
         public async Task<SolvedPuzzlesDto> GetPreviouslySolvedPuzzles()
         {
-            HalRootObject rootObject = await _restServiceConnector.GetAsync<HalRootObject>("/puzzles/previouslySolvedPuzzles");
+            HalRootObject<PuzzleDtoHal[]> rootObject = await _restServiceConnector.GetAsync<HalRootObject<PuzzleDtoHal[]>>("/puzzles/previouslySolvedPuzzles");
             return new SolvedPuzzlesDto
             {
-                Puzzles = rootObject.Embedded?.Puzzles.ToArray<PuzzleDto>() ?? new PuzzleDto[] { }
+                Puzzles = rootObject.Data?.ToArray<PuzzleDto>() ?? new PuzzleDto[] { }
             };
         }
         public async Task SavePuzzle(PuzzleDto puzzleDto)
         {
-            await _restServiceConnector.PostAsync<PuzzleDto, PuzzleDto>("/puzzles/savePuzzle", puzzleDto);
+            await _restServiceConnector.PostAsync<HalRootObject<PuzzleDtoHal>, PuzzleDto>("/puzzles/savePuzzle", puzzleDto);
         }
 
-        internal class HalRootObject
+        public class HalRootObject<T>
         {
-            [JsonProperty("_embedded")]
-            public Embedded Embedded { get; set; }
+            [JsonProperty("message")]
+            public string Message { get; set; }
+            [JsonProperty("success")]
+            public bool Success { get; set; }
+            [JsonProperty("data")]
+            public T Data { get; set; }
             [JsonProperty("_links")]
             public Links Links { get; set; }
         }
 
-        internal class Embedded
-        {
-            [JsonProperty("puzzles")]
-            public PuzzleDtoHal[] Puzzles { get; set; }
-        }
-
-        internal class PuzzleDtoHal : PuzzleDto
+        public class PuzzleDtoHal : PuzzleDto
         {
             [JsonProperty("_links")]
             public Links Links { get; set; }
         }
 
-        internal class Links
+        public class Links
         {
             [JsonProperty("self")]
             public Self Self { get; set; }
         }
 
-        internal class Self
+        public class Self
         {
             [JsonProperty("href")]
             public string Href { get; set; }
