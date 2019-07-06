@@ -18,24 +18,18 @@ namespace Pazuru.Sudoku
         private bool RecursiveSolve()
         {
             if (!TryFindEmptyCell(out int row, out int column))
-            {
                 return true;
-            }
-
             for (int number = 1; number <= 9; number++)
             {
                 SudokuMove sudokuMove = new SudokuMove(row, column, number);
-                if (!sudokuMove.Execute(Puzzle)) continue;
+                if (!sudokuMove.Execute(Puzzle))
+                    continue;
                 AddPuzzleState();
                 if (RecursiveSolve())
-                {
                     return true;
-                }
-
                 sudokuMove.Undo(Puzzle);
                 AddPuzzleState();
             }
-
             return false;
         }
         private bool TryFindEmptyCell(out int row, out int column)
@@ -44,12 +38,11 @@ namespace Pazuru.Sudoku
             {
                 for (int j = 0; j < Puzzle.Length; j++)
                 {
-                    if (Puzzle[i, j].Equals(0))
-                    {
-                        row = i;
-                        column = j;
-                        return true;
-                    }
+                    if (!Puzzle[i, j].Equals(0))
+                        continue;
+                    row = i;
+                    column = j;
+                    return true;
                 }
             }
             row = 0;

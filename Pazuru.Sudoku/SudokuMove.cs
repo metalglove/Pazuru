@@ -22,7 +22,6 @@ namespace Pazuru.Sudoku
             IsValid = puzzle.PuzzleRules.All(rule => rule.IsValid(this));
             if (!IsValid)
                 return false;
-
             NumberBefore = puzzle[Row, Column];
             puzzle.ExecuteMove(this);
             return IsValid;

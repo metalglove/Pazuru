@@ -5,6 +5,6 @@ namespace Pazuru.Presentation.Web.BackEnd.Events
 {
     public class SudokuStateChangeEvent : PuzzleMessage<SudokuStateChange>
     {
-
+        public override string EventName => "sudokuPuzzleStateChange";
     }
 }

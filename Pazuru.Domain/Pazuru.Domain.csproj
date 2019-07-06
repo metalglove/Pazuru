@@ -8,8 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Entities\" />
-    <Folder Include="Enumerations\" />
+    <Compile Remove="Entities\**" />
+    <Compile Remove="Enumerations\**" />
+    <EmbeddedResource Remove="Entities\**" />
+    <EmbeddedResource Remove="Enumerations\**" />
+    <None Remove="Entities\**" />
+    <None Remove="Enumerations\**" />
   </ItemGroup>
 
 </Project>

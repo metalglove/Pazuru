@@ -1,7 +1,6 @@
 import { EventHandler, EventCallBack, EventHandlerDestructor } from '@/services/ICommunicatorService';
 import { PreviouslySolvedPuzzlesViewModel } from '@/viewmodels/PreviouslySolvedPuzzlesViewModel';
 import { PreviouslySolvedPuzzlesEvent } from './PreviouslySolvedPuzzlesEvent';
-import { SolvedPuzzle } from '@/models/SolvedPuzzle';
 
 export class PreviouslySolvedPuzzlesEventHandler extends EventHandler {
   public callback!: EventCallBack;

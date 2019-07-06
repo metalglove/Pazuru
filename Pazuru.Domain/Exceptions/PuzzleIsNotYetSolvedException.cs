@@ -6,6 +6,7 @@ namespace Pazuru.Domain.Exceptions
     {
         public PuzzleIsNotYetSolvedException() : base("Puzzle is not yet solved!")
         {
+
         }
     }
 }

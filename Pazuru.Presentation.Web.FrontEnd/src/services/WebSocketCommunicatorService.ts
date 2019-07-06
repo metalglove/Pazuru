@@ -36,7 +36,6 @@ export class WebSocketCommunicatorService implements ICommunicatorService {
     return (eventHandler: EventHandler) => this.removeEventHandler(eventHandler);
   }
   private messageHandler(event: MessageEvent): void {
-    // console.log('Received message!', event);
     const message: Message = JSON.parse(event.data);
     if (!this.eventHandlers.has(message.eventName)) {
       return;

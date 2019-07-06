@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DlxLib;
 using Pazuru.Domain;
-using Pazuru.Sudoku.DLX;
 
 namespace Pazuru.Sudoku
 {
+    // TODO: Refactor to use the SudokuPuzzle class instead of copying the puzzle rule code.
+    // TODO: Create my own DancingLinks implementation.
     public sealed class SudokuGenerator : PuzzleGenerator<SudokuPuzzle>
     {
         private const int SudokuSize = 9;
@@ -49,22 +51,16 @@ namespace Pazuru.Sudoku
         private bool RecursiveFill()
         {
             if (!TryFindEmptyCell(out int row, out int column))
-            {
                 return true;
-            }
-
             for (byte number = 1; number <= 9; number++)
             {
                 int previousNumber = _puzzle[GetSudokuIndex(row, column)];
                 if (!TryPlaceNumber(number, row, column))
                     continue;
                 if (RecursiveFill())
-                {
                     return true;
-                }
                 _puzzle[GetSudokuIndex(row, column)] = previousNumber;
             }
-
             return false;
         }
         private bool TryPlaceNumber(byte number, int row, int column)
@@ -81,12 +77,11 @@ namespace Pazuru.Sudoku
             {
                 for (int j = 0; j < SudokuSize; j++)
                 {
-                    if (_puzzle[GetSudokuIndex(i, j)].Equals(0))
-                    {
-                        row = i;
-                        column = j;
-                        return true;
-                    }
+                    if (!_puzzle[GetSudokuIndex(i, j)].Equals(0))
+                        continue;
+                    row = i;
+                    column = j;
+                    return true;
                 }
             }
             row = 0;
@@ -183,10 +178,12 @@ namespace Pazuru.Sudoku
                 for (int j = 1; j <= SudokuSize; j++)
                 {
                     int n = _puzzle[GetSudokuIndex(i - 1, j - 1)];
-                    if (n == 0) continue;
+                    if (n == 0)
+                        continue;
                     for (int num = 1; num <= SudokuSize; num++)
                     {
-                        if (num == n) continue;
+                        if (num == n)
+                            continue;
                         int index = GetIndex(i, j, num);
                         for (int k = 0; k < MaxColumns; k++)
                         {
@@ -236,12 +233,9 @@ namespace Pazuru.Sudoku
             _puzzle[index] = 0;
             SudokuExactCover();
             MakeExactCoverGridFromSudoku();
-            IEnumerable<Solution> solutions = DancingLinks.Solve(_problemMatrix);
-
+            IEnumerable<Solution> solutions = new Dlx().Solve(_problemMatrix);
             if (solutions.Count() == 1)
-            {
                 return true;
-            }
             _puzzle[index] = number;
             return false;
         }

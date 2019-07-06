@@ -5,7 +5,7 @@ namespace Pazuru.Presentation.Web.BackEnd.Utilities
     public class PuzzleMessage<TMessageType> where TMessageType : class
     {
         [JsonProperty("eventName")]
-        public string EventName { get; set; }
+        public virtual string EventName { get; set; }
         [JsonProperty("data")]
         public TMessageType Data { get; set; }
         [JsonProperty("message")]
